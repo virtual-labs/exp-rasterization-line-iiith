@@ -11,17 +11,17 @@ Assumption : For the description of the algorithm below, we have assumed the slo
 
     1. if x0 > x1
            swap the endpoints
-    2. ¦¤y = y1 - y0
-       ¦¤x = x1 - x0
-       p0 = 2*¦¤y - ¦¤x
+    2. Î”y = y1 - y0
+       Î”x = x1 - x0
+       p0 = 2*Î”y - Î”x
 
-    3. for i = 1 to ¦¤x
+    3. for i = 1 to Î”x
        do
            if pi-1 < 0
               //the next point is (xi-1 + 1, yi-1)
-    	      pi = pi-1 + 2*¦¤y
+    	      pi = pi-1 + 2*Â¦Â¤y
            else
               //the next point is (xi-1 + 1, yi-1 + 1)
-    	      pi = pi-1 + 2*¦¤y - 2*¦¤x;
+    	      pi = pi-1 + 2*Â¦Â¤y - 2*Î”x;
        done	
 

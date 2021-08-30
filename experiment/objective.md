@@ -1,0 +1,1 @@
+- To understand the steps of a Line Rasterization Algorithm, i.e., how a geometric line is converted to pixels in a 2D frame buffer. As an example, we have demonstrated the steps of Bresenham's Line Rasterization algorithm here.
