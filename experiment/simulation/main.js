@@ -30,6 +30,7 @@ let slope = 0;
 let currx, curry;
 let dx, dy;
 let block_size = height / divisions;
+let last_move_direction = "";
 
 // store the number of times next is called
 let times_next_called = 0;
@@ -52,9 +53,6 @@ function make_axis() {
   ctx.moveTo(mnx, maxy);
   ctx.lineTo(mxx, maxy);
   ctx.stroke();
-}
-function make_line(x1, y1, x2, y2) {
-  // draw the line between the two points
 }
 function set_parameters() {
   // get  & set the coordinates from the input form
@@ -83,7 +81,8 @@ function set_parameters() {
   currx = point1[0];
   curry = point1[1];
   if (point1[0] == point2[0]) {
-    slope = Infinity;
+    if (point1[1] > point2[1]) slope = Number.MIN_SAFE_INTEGER;
+    else slope = Number.MAX_SAFE_INTEGER;
   } else {
     slope = (point2[1] - point1[1]) / (point2[0] - point1[0]);
     if (slope > 1) {
@@ -93,10 +92,13 @@ function set_parameters() {
       decision_parameter = 2 * dy - dx;
     } else if (slope >= -1 && slope < 0) {
       decision_parameter = 2 * Math.abs(dy) - dx;
+    } else if (slope < -1) {
+      decision_parameter = 2 * Math.abs(dx) - Math.abs(dy);
     }
   }
   return;
 }
+
 function highlight(x, y, color) {
   let X = (x + 0.5) * block_size;
   let Y = height - (y + 0.5) * block_size;
@@ -108,6 +110,7 @@ function highlight(x, y, color) {
   ctx.fillRect(X, Y, height / (2 * divisions), -(height / (2 * divisions)));
   ctx.stroke();
 }
+
 function draw_grid() {
   // parameters set by now
   // draw the grid
@@ -148,14 +151,20 @@ function draw_grid() {
   ctx.lineTo(X2, Y2);
   ctx.stroke();
 }
+
 function handle_next() {
   // check for the cases
-  if (slope == Infinity) {
+  if (slope == Number.MAX_SAFE_INTEGER) {
     highlight(currx + 1, curry + 1, "red");
     curry += 1;
     highlight(currx, curry, chosen_color);
+  } else if (slope == Number.MIN_SAFE_INTEGER) {
+    highlight(currx + 1, curry - 1, "red");
+    curry -= 1;
+    highlight(currx, curry, chosen_color);
   } else if (slope >= 0 && slope <= 1) {
     if (decision_parameter < 0) {
+      last_move_direction = "east";
       decision_parameter = decision_parameter + 2 * dy;
       // moving east
       // mark the moving north east as red
@@ -166,6 +175,7 @@ function handle_next() {
       // highlight the choice
       highlight(currx, curry, chosen_color);
     } else {
+      last_move_direction = "north-east";
       // we move north east
       // mark east as red
       highlight(currx + 1, curry, "red");
@@ -180,6 +190,7 @@ function handle_next() {
   } else if (slope > 1) {
     // move north or north east
     if (decision_parameter < 0) {
+      last_move_direction = "north";
       decision_parameter = decision_parameter + 2 * dx;
       // move north
       highlight(currx + 1, curry + 1, "red");
@@ -187,6 +198,7 @@ function handle_next() {
       highlight(currx, curry, chosen_color);
     } else {
       // moving north east
+      last_move_direction = "north-east";
       highlight(currx, curry + 1, "red");
       curry += 1;
       currx += 1;
@@ -198,6 +210,7 @@ function handle_next() {
     // dx is positive and dy is negative
     if (decision_parameter < 0) {
       // move east
+      last_move_direction = "east";
       highlight(currx + 1, curry - 1, "red");
       currx += 1;
       highlight(currx, curry, chosen_color);
@@ -205,28 +218,61 @@ function handle_next() {
     } else {
       decision_parameter = decision_parameter + 2 * Math.abs(dy) - 2 * dx;
       // move south east
+      last_move_direction = "south-east";
       highlight(currx + 1, curry, "red");
       curry -= 1;
       currx += 1;
       highlight(currx, curry, chosen_color);
     }
+  } else if (slope == Number.MIN_SAFE_INTEGER) {
   } else {
+    if (decision_parameter < 0) {
+      last_move_direction = "south";
+      decision_parameter = decision_parameter + 2 * Math.abs(dx);
+      // move south
+      highlight(currx + 1, curry - 1, "red");
+      curry -= 1;
+      highlight(currx, curry, chosen_color);
+    } else {
+      last_move_direction = "south-east";
+      decision_parameter =
+        decision_parameter + 2 * Math.abs(dx) - 2 * Math.abs(dy);
+      // move south east
+      highlight(currx, curry - 1, "red");
+      currx += 1;
+      curry -= 1;
+      highlight(currx, curry, chosen_color);
+    }
   }
 }
 function handle_previous() {}
-
 submit_button.addEventListener("click", () => {
+  times_next_called = 0;
+  last_move_direction = "";
+  point1 = [];
+  point2 = [];
+  slope = 0;
+  currx = 0;
+  curry = 0;
+  decision_parameter = 0;
+  ctx.beginPath();
+  ctx.clearRect(0, 0, width, height);
   set_parameters();
   draw_grid();
 });
 
 next_button.addEventListener("click", () => {
-  console.log(times_next_called);
-  if (times_next_called == 0 && (currx < point2[0] || curry < point2[1])) {
-    if (slope == Infinity) {
+  console.log(times_next_called, slope);
+  if (times_next_called == 0) {
+    if (slope == Number.MAX_SAFE_INTEGER) {
       highlight(currx, curry, chosen_color);
       highlight(currx + 1, curry + 1, possible_color);
       highlight(currx, curry + 1, possible_color);
+    } else if (slope == Number.MIN_SAFE_INTEGER) {
+      console.log("hi1");
+      highlight(currx, curry, chosen_color);
+      highlight(currx + 1, curry - 1, possible_color);
+      highlight(currx, curry - 1, possible_color);
     } else if (slope >= 0 && slope <= 1) {
       // if slope is greater than one then , options of moving is E and NE
       // x+1 , y+1 or x+1 ,
@@ -241,12 +287,21 @@ next_button.addEventListener("click", () => {
       highlight(currx, curry + 1, possible_color);
     } else if (slope >= -1 && slope < 0) {
       highlight(currx, curry, chosen_color);
-      highlight(currx + 1, curry -1, possible_color);
-      highlight(currx+1, curry , possible_color);
+      highlight(currx + 1, curry - 1, possible_color);
+      highlight(currx + 1, curry, possible_color);
+    } else if (slope < -1) {
+      // possible option is to move south or movee south east
+      highlight(currx, curry, chosen_color);
+      highlight(currx + 1, curry - 1, possible_color);
+      highlight(currx, curry - 1, possible_color);
     }
-  } else if ( times_next_called % 2 == 1 && (currx < point2[0] || curry < point2[1])) {
+  } else if (times_next_called % 2 == 1) {
     // mark the chosen path pixel
-    handle_next();
+    if (slope >= 0 && (currx < point2[0] || curry < point2[1])) {
+      handle_next();
+    } else if (slope < 0 && (currx < point2[0] || curry > point2[1])) {
+      handle_next();
+    }
   } else if (times_next_called % 2 == 0) {
     // highlight the possible pixels
 
@@ -259,7 +314,7 @@ next_button.addEventListener("click", () => {
       // East
       highlight(currx + 1, curry, possible_color);
     } else if (
-      (slope == Infinity || slope > 1) &&
+      (slope == Number.MAX_SAFE_INTEGER || slope > 1) &&
       (currx < point2[0] || curry < point2[1])
     ) {
       highlight(currx, curry, chosen_color);
@@ -278,17 +333,127 @@ next_button.addEventListener("click", () => {
       highlight(currx + 1, curry, possible_color);
       // south east move krna show kro
       highlight(currx + 1, curry - 1, possible_color);
-    } else if (slope == -Infinity) {
-    } else if (slope < -1) {
+    } else if (
+      (slope == Number.MIN_SAFE_INTEGER || slope < -1) &&
+      (currx < point2[0] || curry > point2[1])
+    ) {
+      // possible option is to move south or movee south east
+      highlight(currx, curry, chosen_color);
+      highlight(currx + 1, curry - 1, possible_color);
+      highlight(currx, curry - 1, possible_color);
     }
   }
   // increment the counter
   times_next_called += 1;
 });
 
-prev_button.addEventListener("click", () => {});
+prev_button.addEventListener("click", () => {
+  if (times_next_called > 0) {
+    if (times_next_called % 2 == 1) {
+      // last move was highlighting , undo the highlighting and reset the coordinates
+      // console.log("slope : ", slope);
+      let delx, delx1, dely1, dely;
+      if (slope == Number.MAX_SAFE_INTEGER) {
+        // would have highlighted north east and north undo it
+        delx = currx;
+        delx1 = currx + 1;
+        dely1 = curry + 1;
+        dely = curry + 1;
+      } else if (slope == Number.MIN_SAFE_INTEGER) {
+        delx = currx;
+        delx1 = currx + 1;
+        dely1 = curry - 1;
+        dely = curry - 1;
+      } else if (slope >= 0 && slope <= 1) {
+        // east and north east undo
+        delx = currx + 1;
+        delx1 = currx + 1;
+        dely1 = curry + 1;
+        dely = curry;
+        console.log(delx, delx1, dely1, dely);
+      } else if (slope > 1) {
+        // north and north east
+        delx = currx;
+        delx1 = currx + 1;
+        dely1 = curry + 1;
+        dely = curry + 1;
+      } else if (slope >= -1 && slope < 0) {
+        delx = currx + 1;
+        delx1 = currx + 1;
+        dely1 = curry - 1;
+        dely = curry;
+      } else {
+        delx = currx;
+        delx1 = currx + 1;
+        dely1 = curry - 1;
+        dely = curry - 1;
+      }
+      highlight(delx, dely, "black");
+      highlight(delx1, dely1, "black");
+    } else {
+      // last move was choosing a vertex , move back to the highlighting step
+      if (slope == Number.MAX_SAFE_INTEGER) {
+        highlight(currx, curry, possible_color);
+        highlight(currx + 1, curry, possible_color);
+        curry -= 1;
+      } else if (slope == Number.MIN_SAFE_INTEGER) {
+        highlight(currx, curry, possible_color);
+        highlight(currx + 1, curry, possible_color);
+        curry += 1;
+      } else if (slope >= 0 && slope < 1) {
+        // east and north east are the only options
+        if (last_move_direction == "east") {
+          highlight(currx, curry, possible_color);
+          highlight(currx, curry + 1, possible_color);
+          currx -= 1;
+        } else if (last_move_direction == "north-east") {
+          highlight(currx, curry, possible_color);
+          highlight(currx, curry - 1, possible_color);
+          curry -= 1;
+          currx -= 1;
+        }
+      } else if (slope > 1) {
+        if (last_move_direction == "north") {
+          highlight(currx, curry, possible_color);
+          highlight(currx + 1, curry, possible_color);
+          curry -= 1;
+        } else if (last_move_direction == "north-east") {
+          highlight(currx, curry, possible_color);
+          highlight(currx - 1, curry, possible_color);
+          curry -= 1;
+          currx -= 1;
+        }
+      } else if (slope >= -1 && slope < 0) {
+        if (last_move_direction == "south-east") {
+          highlight(currx, curry, possible_color);
+          highlight(currx, curry + 1, possible_color);
+          curry += 1;
+          currx -= 1;
+        } else if (last_move_direction == "east") {
+          highlight(currx, curry, possible_color);
+          highlight(currx, curry - 1, possible_color);
+          currx -= 1;
+        }
+      } else {
+        // south ya south east
+        if (last_move_direction == "south-east") {
+          highlight(currx, curry, possible_color);
+          highlight(currx, curry + 1, possible_color);
+          curry += 1;
+          currx -= 1;
+        } else if (last_move_direction == "south") {
+          highlight(currx, curry, possible_color);
+          highlight(currx + 1, curry, possible_color);
+          curry += 1;
+        }
+      }
+    }
+    times_next_called -= 1;
+  }
+});
 
 reset_button.addEventListener("click", () => {
+  last_move_direction = "";
   times_next_called = 0;
   point1 = [];
   point2 = [];
