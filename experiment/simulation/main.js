@@ -12,6 +12,7 @@ let possible_color = "yellow";
 let point1 = [];
 let point2 = [];
 let decision_parameter;
+let dp = [];
 // fix the heights of the canvas
 let height = 600;
 let width = 1200;
@@ -65,15 +66,7 @@ function set_parameters() {
   y1 = y1 + Number(originy);
   x2 = x2 + Number(originx);
   y2 = y2 + Number(originy);
-  if (x1 > x2) {
-    let temp = x1;
-    x1 = x2;
-    x2 = temp;
-    temp = y1;
-    y1 = y2;
-    y2 = temp;
-    console.log(x1, y1, x2, y2);
-  }
+
   point1 = [x1, y1];
   point2 = [x2, y2];
   dy = Math.abs(y2 - y1);
@@ -96,6 +89,7 @@ function set_parameters() {
       decision_parameter = 2 * Math.abs(dx) - Math.abs(dy);
     }
   }
+  // dp.push(decision_parameter);
   return;
 }
 
@@ -153,6 +147,7 @@ function draw_grid() {
 }
 
 function handle_next() {
+  dp.push(decision_parameter);
   // check for the cases
   if (slope == Number.MAX_SAFE_INTEGER) {
     highlight(currx + 1, curry + 1, "red");
@@ -249,6 +244,7 @@ function handle_previous() {}
 submit_button.addEventListener("click", () => {
   times_next_called = 0;
   last_move_direction = "";
+  dp = [];
   point1 = [];
   point2 = [];
   slope = 0;
@@ -258,11 +254,33 @@ submit_button.addEventListener("click", () => {
   ctx.beginPath();
   ctx.clearRect(0, 0, width, height);
   set_parameters();
+
+  let x1 = point1[0],
+    y1 = point1[1];
+  let x2 = point2[0],
+    y2 = point2[1];
+  if (x1 > x2) {
+    alert("Enter Values such that x1 < x2 !!");
+    return;
+  }
+  if (
+    x1 < -45 ||
+    x1 > 43 ||
+    x2 < -45 ||
+    x2 > 43 ||
+    y1 > 21 ||
+    y1 < -23 ||
+    y2 > 21 ||
+    y2 < -23
+  ) {
+    alert("Enter Values in boundary limits !! X : [-45 , 43] Y : [-23 , 21]");
+    return;
+  }
   draw_grid();
 });
 
 next_button.addEventListener("click", () => {
-  console.log(times_next_called, slope);
+  console.log(dp);
   if (times_next_called == 0) {
     if (slope == Number.MAX_SAFE_INTEGER) {
       highlight(currx, curry, chosen_color);
@@ -348,6 +366,7 @@ next_button.addEventListener("click", () => {
 });
 
 prev_button.addEventListener("click", () => {
+  // console.log("before : ", dp, dp.length);
   if (times_next_called > 0) {
     if (times_next_called % 2 == 1) {
       // last move was highlighting , undo the highlighting and reset the coordinates
@@ -370,7 +389,7 @@ prev_button.addEventListener("click", () => {
         delx1 = currx + 1;
         dely1 = curry + 1;
         dely = curry;
-        console.log(delx, delx1, dely1, dely);
+        // console.log(delx, delx1, dely1, dely);
       } else if (slope > 1) {
         // north and north east
         delx = currx;
@@ -400,48 +419,53 @@ prev_button.addEventListener("click", () => {
         highlight(currx, curry, possible_color);
         highlight(currx + 1, curry, possible_color);
         curry += 1;
-      } else if (slope >= 0 && slope < 1) {
+      } else if (slope >= 0 && slope <= 1 && dp.length > 0) {
         // east and north east are the only options
-        if (last_move_direction == "east") {
+        let last = dp.pop();
+        if (last < 0) {
           highlight(currx, curry, possible_color);
           highlight(currx, curry + 1, possible_color);
           currx -= 1;
-        } else if (last_move_direction == "north-east") {
+        } else if (last >= 0) {
           highlight(currx, curry, possible_color);
           highlight(currx, curry - 1, possible_color);
           curry -= 1;
           currx -= 1;
         }
-      } else if (slope > 1) {
-        if (last_move_direction == "north") {
+      } else if (slope > 1 && dp.length > 0) {
+        let last = dp.pop();
+        console.log("here : ", last);
+        if (last < 0) {
           highlight(currx, curry, possible_color);
           highlight(currx + 1, curry, possible_color);
           curry -= 1;
-        } else if (last_move_direction == "north-east") {
+        } else if (last >= 0) {
           highlight(currx, curry, possible_color);
           highlight(currx - 1, curry, possible_color);
           curry -= 1;
           currx -= 1;
         }
-      } else if (slope >= -1 && slope < 0) {
-        if (last_move_direction == "south-east") {
+      } else if (slope >= -1 && slope < 0 && dp.length > 0) {
+        let last = dp.pop();
+        if (last >= 0) {
           highlight(currx, curry, possible_color);
           highlight(currx, curry + 1, possible_color);
           curry += 1;
           currx -= 1;
-        } else if (last_move_direction == "east") {
+        } else if (last < 0) {
           highlight(currx, curry, possible_color);
           highlight(currx, curry - 1, possible_color);
           currx -= 1;
         }
-      } else {
+      } else if (dp.length > 0) {
         // south ya south east
-        if (last_move_direction == "south-east") {
+        let last = dp.pop();
+        if (last >= 0) {
           highlight(currx, curry, possible_color);
-          highlight(currx, curry + 1, possible_color);
+          highlight(currx - 1, curry, possible_color);
           curry += 1;
           currx -= 1;
-        } else if (last_move_direction == "south") {
+        } else if (last < 0) {
           highlight(currx, curry, possible_color);
           highlight(currx + 1, curry, possible_color);
           curry += 1;
@@ -449,10 +473,12 @@ prev_button.addEventListener("click", () => {
       }
     }
     times_next_called -= 1;
+    // console.log("after : ", dp);
   }
 });
 
 reset_button.addEventListener("click", () => {
+  dp = [];
   last_move_direction = "";
   times_next_called = 0;
   point1 = [];
