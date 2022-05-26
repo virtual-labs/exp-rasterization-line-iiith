@@ -7,7 +7,7 @@ let canvas = document.getElementById("canvas");
 // get the context
 let ctx = canvas.getContext("2d");
 let chosen_color = "green";
-let possible_color = "yellow";
+let possible_color = "blue";
 // define the set of coordinates depict them as 2-d vectors
 let point1 = [];
 let point2 = [];
@@ -255,14 +255,15 @@ submit_button.addEventListener("click", () => {
   ctx.clearRect(0, 0, width, height);
   set_parameters();
 
-  let x1 = point1[0],
-    y1 = point1[1];
-  let x2 = point2[0],
-    y2 = point2[1];
+  let x1 = point1[0] - originx,
+    y1 = point1[1] - originy;
+  let x2 = point2[0] - originx,
+    y2 = point2[1] - originy;
   if (x1 > x2) {
     alert("Enter Values such that x1 < x2 !!");
     return;
   }
+  console.log(x1, y1, x2, y2);
   if (
     x1 < -45 ||
     x1 > 43 ||
@@ -362,6 +363,27 @@ next_button.addEventListener("click", () => {
     }
   }
   // increment the counter
+  let X1 = (point1[0] + 0.5) * block_size;
+  let Y1 = height - (point1[1] + 0.5) * block_size;
+  let X2 = (point2[0] + 0.5) * block_size;
+  let Y2 = height - (point2[1] + 0.5) * block_size;
+
+  ctx.beginPath();
+  ctx.arc(X1, Y1, 1, 0, 2 * Math.PI, false);
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "red";
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(X2, Y2, 1, 0, 2 * Math.PI, false);
+  ctx.strokeStyle = "red";
+  ctx.lineWidth = 5;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = "yellow";
+  ctx.moveTo(X1, Y1);
+  ctx.lineTo(X2, Y2);
+  ctx.stroke();
   times_next_called += 1;
 });
 
@@ -474,6 +496,27 @@ prev_button.addEventListener("click", () => {
     }
     times_next_called -= 1;
     // console.log("after : ", dp);
+    let X1 = (point1[0] + 0.5) * block_size;
+    let Y1 = height - (point1[1] + 0.5) * block_size;
+    let X2 = (point2[0] + 0.5) * block_size;
+    let Y2 = height - (point2[1] + 0.5) * block_size;
+
+    ctx.beginPath();
+    ctx.arc(X1, Y1, 1, 0, 2 * Math.PI, false);
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "red";
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(X2, Y2, 1, 0, 2 * Math.PI, false);
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 5;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "yellow";
+    ctx.moveTo(X1, Y1);
+    ctx.lineTo(X2, Y2);
+    ctx.stroke();
   }
 });
 
