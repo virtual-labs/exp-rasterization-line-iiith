@@ -51,9 +51,10 @@
             <div>
               <p class="is-size-7-mobile">Point 1:</p>
               <div style="display: flexbox">
+                <div class="error" id="error-x1"></div>
+                <label for="x1">x :</label>
                 <input
                   class="input is-small"
-                  style="width: 30%"
                   type="number"
                   min="-45"
                   max="43"
@@ -61,9 +62,12 @@
                   value="5"
                   placeholder="X "
                 />
+                <div class="error" id="error-y1"></div>
+                
+                <label for="y1">y :</label>
+          
                 <input
                   class="input is-small"
-                  style="width: 30%"
                   type="number"
                   min="-23"
                   max="21"
@@ -76,19 +80,24 @@
             <div>
               <p class="is-size-7-mobile">Point 2:</p>
               <div style="display: flexbox">
+                <div class="error" id="error-x2"></div>
+                <label for="x2">x :</label>
+          
                 <input
                   class="input is-small"
-                  style="width: 30%"
                   type="number"
                   min="-45"
                   max="43"
                   id="x2"
                   value="20"
                   placeholder="X "
+                  
                 />
+                <div class="error" id="error-y2"></div>
+                <label for="y2">y :</label>
+          
                 <input
                   class="input is-small"
-                  style="width: 30%"
                   type="number"
                   min="-23"
                   max="21"
