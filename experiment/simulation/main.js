@@ -30,7 +30,7 @@ canvas.width = width;
 // determine the number of divisions based on the distance between the two points
 let divisions = 45;
 let MAXX = 88;
-let MINX = 0;
+let MINX = -100;
 let MAXY = 44;
 let MINY = 0;
 let grid_color = "white";
@@ -49,10 +49,10 @@ let times_next_called = 0;
 
 formx1.onchange = function () {
   let x1 = formx1.value;
-  if (x1 < MINX || x1 > MAXX) {
+  if (x1 < -45 || x1 > 44) {
     valid = 0;
     formx1.style.border = "1px solid red";
-    errorx1.innerHTML = "x should be between " + MINX + " and " + MAXX;
+    errorx1.innerHTML = "x should be between " + "-45" + " and " + "44";
   } else {
     valid = 1;
     errorx1.innerHTML = "";
@@ -60,10 +60,10 @@ formx1.onchange = function () {
 };
 formy1.onchange = function () {
   let y1 = formy1.value;
-  if (y1 < MINY || y1 > MAXY) {
+  if (y1 < -23 || y1 > 21) {
     valid = 0;
     formy1.style.border = "1px solid red";
-    errory1.innerHTML = "y should be between " + MINY + " and " + MAXY;
+    errory1.innerHTML = "y should be between " + "-23" + " and " + "21";
   } else {
     valid = 1;
     errory1.innerHTML = "";
@@ -71,10 +71,10 @@ formy1.onchange = function () {
 };
 formx2.onchange = function () {
   let x2 = formx2.value;
-  if (x2 < MINX || x2 > MAXX) {
+  if (x2 < -45 || x2 > 44) {
     formx2.style.border = "1px solid red";
     valid = 0;
-    errorx2.innerHTML = "x should be between " + MINX + " and " + MAXX;
+    errorx2.innerHTML = "x should be between " + "-45" + " and " + "44";
   } else {
     valid = 1;
     errorx2.innerHTML = "";
@@ -82,10 +82,10 @@ formx2.onchange = function () {
 };
 formy2.onchange = function () {
   let y2 = formy2.value;
-  if (y2 < MINY || y2 > MAXY) {
+  if (y2 < -23 || y2 > 21) {
     formy2.style.border = "1px solid red";
     valid = 0;
-    errory2.innerHTML = "y should be between " + MINY + " and " + MAXY;
+    errory2.innerHTML = "y should be between " + "-23" + " and " + "21";
   } else {
     valid = 1;
     errory2.innerHTML = "";
