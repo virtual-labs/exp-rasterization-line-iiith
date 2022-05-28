@@ -41,12 +41,56 @@ let currx, curry;
 let dx, dy;
 let block_size = height / divisions;
 let last_move_direction = "";
-let flag = 0;
+let valid = 1;
 
 // let submit_button = document.getElementById("submit");
 // store the number of times next is called
 let times_next_called = 0;
 
+formx1.onchange = function () {
+  let x1 = formx1.value;
+  if (x1 < MINX || x1 > MAXX) {
+    valid = 0;
+    formx1.style.border = "1px solid red";
+    errorx1.innerHTML = "x should be between " + MINX + " and " + MAXX;
+  } else {
+    valid = 1;
+    errorx1.innerHTML = "";
+  }
+};
+formy1.onchange = function () {
+  let y1 = formy1.value;
+  if (y1 < MINY || y1 > MAXY) {
+    valid = 0;
+    formy1.style.border = "1px solid red";
+    errory1.innerHTML = "y should be between " + MINY + " and " + MAXY;
+  } else {
+    valid = 1;
+    errory1.innerHTML = "";
+  }
+};
+formx2.onchange = function () {
+  let x2 = formx2.value;
+  if (x2 < MINX || x2 > MAXX) {
+    formx2.style.border = "1px solid red";
+    valid = 0;
+    errorx2.innerHTML = "x should be between " + MINX + " and " + MAXX;
+  } else {
+    valid = 1;
+    errorx2.innerHTML = "";
+  }
+};
+formy2.onchange = function () {
+  let y2 = formy2.value;
+  if (y2 < MINY || y2 > MAXY) {
+    formy2.style.border = "1px solid red";
+    valid = 0;
+    errory2.innerHTML = "y should be between " + MINY + " and " + MAXY;
+  } else {
+    valid = 1;
+    errory2.innerHTML = "";
+  }
+};
 function make_axis() {
   let maxx = (MAXX / 2 + 1 + 0.5) * block_size;
   let maxy = height - (MAXY / 2 + 1 + 0.5) * block_size;
@@ -268,49 +312,7 @@ submit_button.addEventListener("click", (event) => {
   ctx.beginPath();
   ctx.clearRect(0, 0, width, height);
   set_parameters();
-
-  let x1 = point1[0],
-    y1 = point1[1];
-  let x2 = point2[0],
-    y2 = point2[1];
-
-  let error = false;
-  if (x1 < MINX || x1 > MAXX) {
-    error = true;
-    formx1.style.border = "1px solid red";
-    errorx1.innerHTML = "x should be between " + MINX + " and " + MAXX;
-  }
-  if (y1 < MINY || y1 > MAXY) {
-    error = true;
-    formy1.style.border = "1px solid red";
-    errory1.innerHTML = "y should be between " + MINY + " and " + MAXY;
- 
-  }
-  if (x2 < MINX || x2 > MAXX) {
-    error = true;
-    formx2.style.border = "1px solid red";
-    errorx2.innerHTML = "x should be between " + MINX + " and " + MAXX;
-  
-  }
-  if (y2 < MINY || y2 > MAXY) {
-    error = true;
-    formy2.style.border = "1px solid red";
-    errory2.innerHTML = "y should be between " + MINY + " and " + MAXY;
-  
-  }
-  if (error) {
-    return;
-  }
-  formx1.style.border = "none";
-  formy1.style.border = "none";
-  formx2.style.border = "none";
-  formy2.style.border = "none";
-  errorx1.innerHTML = "";
-  errory1.innerHTML = "";
-  errorx2.innerHTML = "";
-  errory2.innerHTML = "";
-
-  draw_grid();
+  if (valid == 1) draw_grid();
 });
 
 next_button.addEventListener("click", () => {
