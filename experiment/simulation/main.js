@@ -2,7 +2,16 @@ const submit_button = document.getElementById("submit");
 const next_button = document.getElementById("next-button");
 const prev_button = document.getElementById("prev-button");
 const reset_button = document.getElementById("reset-button");
+const formx1 = document.getElementById("x1");
+const formy1 = document.getElementById("y1");
+const formx2 = document.getElementById("x2");
+const formy2 = document.getElementById("y2");
+const errorx1 = document.getElementById("error-x1");
+const errorx2 = document.getElementById("error-x2");
+const errory1 = document.getElementById("error-y1");
+const errory2 = document.getElementById("error-y2");
 // get the canvas
+
 let canvas = document.getElementById("canvas");
 // get the context
 let ctx = canvas.getContext("2d");
@@ -32,9 +41,12 @@ let currx, curry;
 let dx, dy;
 let block_size = height / divisions;
 let last_move_direction = "";
+let flag = 0;
 
+// let submit_button = document.getElementById("submit");
 // store the number of times next is called
 let times_next_called = 0;
+
 function make_axis() {
   let maxx = (MAXX / 2 + 1 + 0.5) * block_size;
   let maxy = height - (MAXY / 2 + 1 + 0.5) * block_size;
@@ -69,6 +81,7 @@ function set_parameters() {
 
   point1 = [x1, y1];
   point2 = [x2, y2];
+  flag = 1;
   dy = Math.abs(y2 - y1);
   dx = Math.abs(x2 - x1);
   currx = point1[0];
@@ -139,7 +152,7 @@ function draw_grid() {
   make_axis();
 
   ctx.beginPath();
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 1;
   ctx.strokeStyle = "yellow";
   ctx.moveTo(X1, Y1);
   ctx.lineTo(X2, Y2);
@@ -241,7 +254,8 @@ function handle_next() {
   }
 }
 function handle_previous() {}
-submit_button.addEventListener("click", () => {
+submit_button.addEventListener("click", (event) => {
+  event.preventDefault();
   times_next_called = 0;
   last_move_direction = "";
   dp = [];
@@ -255,136 +269,161 @@ submit_button.addEventListener("click", () => {
   ctx.clearRect(0, 0, width, height);
   set_parameters();
 
-  let x1 = point1[0] - originx,
-    y1 = point1[1] - originy;
-  let x2 = point2[0] - originx,
-    y2 = point2[1] - originy;
-  if (x1 > x2) {
-    alert("Enter Values such that x1 < x2 !!");
+  let x1 = point1[0],
+    y1 = point1[1];
+  let x2 = point2[0],
+    y2 = point2[1];
+
+  let error = false;
+  if (x1 < MINX || x1 > MAXX) {
+    error = true;
+    formx1.style.border = "1px solid red";
+    errorx1.innerHTML = "x should be between " + MINX + " and " + MAXX;
+  }
+  if (y1 < MINY || y1 > MAXY) {
+    error = true;
+    formy1.style.border = "1px solid red";
+    errory1.innerHTML = "y should be between " + MINY + " and " + MAXY;
+ 
+  }
+  if (x2 < MINX || x2 > MAXX) {
+    error = true;
+    formx2.style.border = "1px solid red";
+    errorx2.innerHTML = "x should be between " + MINX + " and " + MAXX;
+  
+  }
+  if (y2 < MINY || y2 > MAXY) {
+    error = true;
+    formy2.style.border = "1px solid red";
+    errory2.innerHTML = "y should be between " + MINY + " and " + MAXY;
+  
+  }
+  if (error) {
     return;
   }
-  console.log(x1, y1, x2, y2);
-  if (
-    x1 < -45 ||
-    x1 > 43 ||
-    x2 < -45 ||
-    x2 > 43 ||
-    y1 > 21 ||
-    y1 < -23 ||
-    y2 > 21 ||
-    y2 < -23
-  ) {
-    alert("Enter Values in boundary limits !! X : [-45 , 43] Y : [-23 , 21]");
-    return;
-  }
+  formx1.style.border = "none";
+  formy1.style.border = "none";
+  formx2.style.border = "none";
+  formy2.style.border = "none";
+  errorx1.innerHTML = "";
+  errory1.innerHTML = "";
+  errorx2.innerHTML = "";
+  errory2.innerHTML = "";
+
   draw_grid();
 });
 
 next_button.addEventListener("click", () => {
   console.log(dp);
-  if (times_next_called == 0) {
-    if (slope == Number.MAX_SAFE_INTEGER) {
-      highlight(currx, curry, chosen_color);
-      highlight(currx + 1, curry + 1, possible_color);
-      highlight(currx, curry + 1, possible_color);
-    } else if (slope == Number.MIN_SAFE_INTEGER) {
-      console.log("hi1");
-      highlight(currx, curry, chosen_color);
-      highlight(currx + 1, curry - 1, possible_color);
-      highlight(currx, curry - 1, possible_color);
-    } else if (slope >= 0 && slope <= 1) {
-      // if slope is greater than one then , options of moving is E and NE
-      // x+1 , y+1 or x+1 ,
-      highlight(currx, curry, chosen_color);
-      // North East
-      highlight(currx + 1, curry + 1, possible_color);
-      // east
-      highlight(currx + 1, curry, possible_color);
-    } else if (slope > 1) {
-      highlight(currx, curry, chosen_color);
-      highlight(currx + 1, curry + 1, possible_color);
-      highlight(currx, curry + 1, possible_color);
-    } else if (slope >= -1 && slope < 0) {
-      highlight(currx, curry, chosen_color);
-      highlight(currx + 1, curry - 1, possible_color);
-      highlight(currx + 1, curry, possible_color);
-    } else if (slope < -1) {
-      // possible option is to move south or movee south east
-      highlight(currx, curry, chosen_color);
-      highlight(currx + 1, curry - 1, possible_color);
-      highlight(currx, curry - 1, possible_color);
-    }
-  } else if (times_next_called % 2 == 1) {
-    // mark the chosen path pixel
-    if (slope >= 0 && (currx < point2[0] || curry < point2[1])) {
-      handle_next();
-    } else if (slope < 0 && (currx < point2[0] || curry > point2[1])) {
-      handle_next();
-    }
-  } else if (times_next_called % 2 == 0) {
-    // highlight the possible pixels
+  if (flag) {
+    if (times_next_called == 0) {
+      if (slope == Number.MAX_SAFE_INTEGER) {
+        highlight(currx, curry, chosen_color);
+        highlight(currx + 1, curry + 1, possible_color);
+        highlight(currx, curry + 1, possible_color);
+      } else if (slope == Number.MIN_SAFE_INTEGER) {
+        console.log("hi1");
+        highlight(currx, curry, chosen_color);
+        highlight(currx + 1, curry - 1, possible_color);
+        highlight(currx, curry - 1, possible_color);
+      } else if (slope >= 0 && slope <= 1) {
+        // if slope is greater than one then , options of moving is E and NE
+        // x+1 , y+1 or x+1 ,
+        highlight(currx, curry, chosen_color);
+        // North East
+        highlight(currx + 1, curry + 1, possible_color);
+        // east
+        highlight(currx + 1, curry, possible_color);
+      } else if (slope > 1) {
+        highlight(currx, curry, chosen_color);
+        highlight(currx + 1, curry + 1, possible_color);
+        highlight(currx, curry + 1, possible_color);
+      } else if (slope >= -1 && slope < 0) {
+        highlight(currx, curry, chosen_color);
+        highlight(currx + 1, curry - 1, possible_color);
+        highlight(currx + 1, curry, possible_color);
+      } else if (slope < -1) {
+        // possible option is to move south or movee south east
+        highlight(currx, curry, chosen_color);
+        highlight(currx + 1, curry - 1, possible_color);
+        highlight(currx, curry - 1, possible_color);
+      }
+    } else if (times_next_called % 2 == 1) {
+      // mark the chosen path pixel
+      if (slope >= 0 && (currx < point2[0] || curry < point2[1])) {
+        handle_next();
+      } else if (slope < 0 && (currx < point2[0] || curry > point2[1])) {
+        handle_next();
+      }
+    } else if (times_next_called % 2 == 0) {
+      // highlight the possible pixels
 
-    if (slope >= 0 && slope <= 1 && (currx < point2[0] || curry < point2[1])) {
-      // if slope is greater than one then , options of moving is E and NE
-      // x+1 , y+1 or x+1 ,
-      highlight(currx, curry, chosen_color);
-      // North East
-      highlight(currx + 1, curry + 1, possible_color);
-      // East
-      highlight(currx + 1, curry, possible_color);
-    } else if (
-      (slope == Number.MAX_SAFE_INTEGER || slope > 1) &&
-      (currx < point2[0] || curry < point2[1])
-    ) {
-      highlight(currx, curry, chosen_color);
-      // north east
-      highlight(currx + 1, curry + 1, possible_color);
-      // north
-      highlight(currx, curry + 1, possible_color);
-    } else if (
-      (currx < point2[0] || curry > point2[1]) &&
-      slope >= -1 &&
-      slope < 0
-    ) {
-      // we have the option to move east or south east
-      highlight(currx, curry, chosen_color);
-      // east move krna show kro
-      highlight(currx + 1, curry, possible_color);
-      // south east move krna show kro
-      highlight(currx + 1, curry - 1, possible_color);
-    } else if (
-      (slope == Number.MIN_SAFE_INTEGER || slope < -1) &&
-      (currx < point2[0] || curry > point2[1])
-    ) {
-      // possible option is to move south or movee south east
-      highlight(currx, curry, chosen_color);
-      highlight(currx + 1, curry - 1, possible_color);
-      highlight(currx, curry - 1, possible_color);
+      if (
+        slope >= 0 &&
+        slope <= 1 &&
+        (currx < point2[0] || curry < point2[1])
+      ) {
+        // if slope is greater than one then , options of moving is E and NE
+        // x+1 , y+1 or x+1 ,
+        highlight(currx, curry, chosen_color);
+        // North East
+        highlight(currx + 1, curry + 1, possible_color);
+        // East
+        highlight(currx + 1, curry, possible_color);
+      } else if (
+        (slope == Number.MAX_SAFE_INTEGER || slope > 1) &&
+        (currx < point2[0] || curry < point2[1])
+      ) {
+        highlight(currx, curry, chosen_color);
+        // north east
+        highlight(currx + 1, curry + 1, possible_color);
+        // north
+        highlight(currx, curry + 1, possible_color);
+      } else if (
+        (currx < point2[0] || curry > point2[1]) &&
+        slope >= -1 &&
+        slope < 0
+      ) {
+        // we have the option to move east or south east
+        highlight(currx, curry, chosen_color);
+        // east move krna show kro
+        highlight(currx + 1, curry, possible_color);
+        // south east move krna show kro
+        highlight(currx + 1, curry - 1, possible_color);
+      } else if (
+        (slope == Number.MIN_SAFE_INTEGER || slope < -1) &&
+        (currx < point2[0] || curry > point2[1])
+      ) {
+        // possible option is to move south or movee south east
+        highlight(currx, curry, chosen_color);
+        highlight(currx + 1, curry - 1, possible_color);
+        highlight(currx, curry - 1, possible_color);
+      }
     }
+    // increment the counter
+    let X1 = (point1[0] + 0.5) * block_size;
+    let Y1 = height - (point1[1] + 0.5) * block_size;
+    let X2 = (point2[0] + 0.5) * block_size;
+    let Y2 = height - (point2[1] + 0.5) * block_size;
+
+    ctx.beginPath();
+    ctx.arc(X1, Y1, 1, 0, 2 * Math.PI, false);
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "red";
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(X2, Y2, 1, 0, 2 * Math.PI, false);
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 5;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "yellow";
+    ctx.moveTo(X1, Y1);
+    ctx.lineTo(X2, Y2);
+    ctx.stroke();
+    times_next_called += 1;
   }
-  // increment the counter
-  let X1 = (point1[0] + 0.5) * block_size;
-  let Y1 = height - (point1[1] + 0.5) * block_size;
-  let X2 = (point2[0] + 0.5) * block_size;
-  let Y2 = height - (point2[1] + 0.5) * block_size;
-
-  ctx.beginPath();
-  ctx.arc(X1, Y1, 1, 0, 2 * Math.PI, false);
-  ctx.lineWidth = 3;
-  ctx.strokeStyle = "red";
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(X2, Y2, 1, 0, 2 * Math.PI, false);
-  ctx.strokeStyle = "red";
-  ctx.lineWidth = 5;
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = "yellow";
-  ctx.moveTo(X1, Y1);
-  ctx.lineTo(X2, Y2);
-  ctx.stroke();
-  times_next_called += 1;
 });
 
 prev_button.addEventListener("click", () => {
@@ -512,7 +551,7 @@ prev_button.addEventListener("click", () => {
     ctx.lineWidth = 5;
     ctx.stroke();
     ctx.beginPath();
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1;
     ctx.strokeStyle = "yellow";
     ctx.moveTo(X1, Y1);
     ctx.lineTo(X2, Y2);
@@ -522,6 +561,7 @@ prev_button.addEventListener("click", () => {
 
 reset_button.addEventListener("click", () => {
   dp = [];
+  flag = 0;
   last_move_direction = "";
   times_next_called = 0;
   point1 = [];
