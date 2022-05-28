@@ -1,19 +1,11 @@
-1. Fix the size of the frame buffer (the default parameters are already filled in the input boxes) and then click on Enter.  
-   You can also proceed directly to the experiment using the default parameters of the size of frame buffer and the starting and ending coordinates, by clicking on Start Experiment with Default values.  
-2. Fix the starting and ending coordinates. The default values are already filled in the input boxes. Once you have finalized the coordinates, you can click on Start Experiment to begin with the experiment.  
-   You can also go Back to change the values of the frame buffer.  
-3. Throughout the experiment, you can click on Next Iteration to go to the next step of the algorithm and Previous Iteration to go to the previous step.  
-4. Once the experiment ends, you can again experiment with a new line.  
+1. Shown on the canvas , is a 2-D pixel grid , similiar to how the computer renders graphics in form of pixels. For starting the simulation , enter the coordinates of endpoints for the line , to get started with the experiment. For providing a good visual experience , we have limited the range of coordinates of values for the endpoints of the line. To start the experiment follow the steps below : 
 
-
-
-
-1. The experiment contains a frame buffer which represents the screen to which the graphics primitives (line in this case) are rendered to.   
-2. The experiment allows the user to change the size of the frame buffer.  
-3. The experiment allows the user to choose the starting and ending coordinates of his own choice.  
-4. The user can move forward and backward through the steps of the experiment.  
-5. At each step of the algorithm, the important computations that took place in that step are also given for better understanding of the algorithm.  
-
-
-
-
+2. Enter the coordinates of the endpoints of the line , keeping in mind that 
+   1.  the x-coordinate of the first point must be less than or equal to the x-coordinate of the second point 
+   2.  the coordinate values must lie in the respective range for both x-coordinates and y-coordinates.
+3. Click on submit , and the line in "yellow" with endpoints highlighted in "red" appears on the canvas , with pixel grids shown in the background.
+4. Click on next to proceed with the simulation.
+5. On clicking next , it first highlights the possible pixels ( the candidate pixels ) that could be chosen for representing the line on computer screen , which are highlighted in "blue".
+6. On clicking next , further choses the pixel out of the candidate pixels 
+7. For moving back in the simulation , click on previous , to move backwards in the experiment simulation. 
+8. Click on Reset to clear the canvas .
