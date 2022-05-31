@@ -2,13 +2,22 @@
   overflow: hidden;
   margin: 1rem;
 }
-.error{
+.instructions {
+  font-size: 0.9rem;
+}
+.error {
   color: red;
   font-size: 12px;
   /* size: 10px; */
 }
 .text {
   text-align: center;
+}
+.btn {
+  margin: 1%;
+}
+.submit-btn {
+  margin-top: 0.5rem;
 }
 input[type="number"] {
   width: 20%;
@@ -45,9 +54,13 @@ input[type="number"] {
 .exp {
   order: 2;
 }
-
+.flex{
+  display: is-flex;
+}
 .button-div {
   order: 3;
+  margin: auto;
+  width: auto;
 }
 
 .top-border {
