@@ -27,6 +27,8 @@ input[type="number"] {
   width: 101%;
   height: 100%;
   color: black;
+  background-color: black;
+  border: 2px solid black;
 }
 
 .v-datalist-container {
@@ -54,7 +56,7 @@ input[type="number"] {
 .exp {
   order: 2;
 }
-.flex{
+.flex {
   display: is-flex;
 }
 .button-div {
