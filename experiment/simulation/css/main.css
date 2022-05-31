@@ -50,7 +50,7 @@ input[type="number"] {
   order: 3;
 }
 
-#top-border {
+.top-border {
   border-top: 1px solid black;
 }
 
