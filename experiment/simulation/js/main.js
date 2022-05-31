@@ -15,31 +15,33 @@ const errory2 = document.getElementById("error-y2");
 let canvas = document.getElementById("canvas");
 // get the context
 let ctx = canvas.getContext("2d");
-let chosen_color = "green";
-let possible_color = "blue";
+const height = 600;
+const width = 1200;
+canvas.height = height;
+canvas.width = width;
+
+const chosen_color = "green";
+const possible_color = "blue";
+// determine the number of divisions based on the distance between the two points
+const divisions = 45;
+const MAXX = 88;
+const MINX = -100;
+const MAXY = 44;
+const MINY = 0;
+const grid_color = "white";
+const originx = 45;
+const originy = 23;
+const block_size = height / divisions;
+
 // define the set of coordinates depict them as 2-d vectors
 let point1 = [];
 let point2 = [];
 let decision_parameter;
 let dp = [];
 // fix the heights of the canvas
-let height = 600;
-let width = 1200;
-canvas.height = height;
-canvas.width = width;
-// determine the number of divisions based on the distance between the two points
-let divisions = 45;
-let MAXX = 88;
-let MINX = -100;
-let MAXY = 44;
-let MINY = 0;
-let grid_color = "white";
-let originx = 45;
-let originy = 23;
 let slope = 0;
 let currx, curry;
 let dx, dy;
-let block_size = height / divisions;
 let last_move_direction = "";
 let valid = 1;
 
@@ -55,6 +57,7 @@ formx1.onchange = function () {
     errorx1.innerHTML = "x should be between " + "-45" + " and " + "44";
   } else {
     valid = 1;
+    formx1.style.border = "none";
     errorx1.innerHTML = "";
   }
 };
@@ -66,6 +69,8 @@ formy1.onchange = function () {
     errory1.innerHTML = "y should be between " + "-23" + " and " + "21";
   } else {
     valid = 1;
+    formy1.style.border = "none";
+
     errory1.innerHTML = "";
   }
 };
@@ -77,6 +82,8 @@ formx2.onchange = function () {
     errorx2.innerHTML = "x should be between " + "-45" + " and " + "44";
   } else {
     valid = 1;
+    formx2.style.border = "none";
+   
     errorx2.innerHTML = "";
   }
 };
@@ -88,10 +95,12 @@ formy2.onchange = function () {
     errory2.innerHTML = "y should be between " + "-23" + " and " + "21";
   } else {
     valid = 1;
+    formy2.style.border = "none";
+  
     errory2.innerHTML = "";
   }
 };
-function make_axis() {
+function makeAxis() {
   let maxx = (MAXX / 2 + 1 + 0.5) * block_size;
   let maxy = height - (MAXY / 2 + 1 + 0.5) * block_size;
   let miny = height - (MINY - 1 + 0.5) * block_size;
@@ -111,7 +120,7 @@ function make_axis() {
   ctx.lineTo(mxx, maxy);
   ctx.stroke();
 }
-function set_parameters() {
+function setParameters() {
   // get  & set the coordinates from the input form
   let x1 = Number(document.getElementById("x1").value);
   let y1 = Number(document.getElementById("y1").value);
@@ -162,7 +171,7 @@ function highlight(x, y, color) {
   ctx.stroke();
 }
 
-function draw_grid() {
+function drawGrid() {
   // parameters set by now
   // draw the grid
   ctx.beginPath();
@@ -193,17 +202,17 @@ function draw_grid() {
   ctx.strokeStyle = "red";
   ctx.lineWidth = 5;
   ctx.stroke();
-  make_axis();
+  makeAxis();
 
   ctx.beginPath();
-  ctx.lineWidth = 1;
+  ctx.lineWidth = 2;
   ctx.strokeStyle = "yellow";
   ctx.moveTo(X1, Y1);
   ctx.lineTo(X2, Y2);
   ctx.stroke();
 }
 
-function handle_next() {
+function handleNext() {
   dp.push(decision_parameter);
   // check for the cases
   if (slope == Number.MAX_SAFE_INTEGER) {
@@ -297,7 +306,7 @@ function handle_next() {
     }
   }
 }
-function handle_previous() {}
+function hadndlePrevious() {}
 submit_button.addEventListener("click", (event) => {
   event.preventDefault();
   times_next_called = 0;
@@ -311,12 +320,11 @@ submit_button.addEventListener("click", (event) => {
   decision_parameter = 0;
   ctx.beginPath();
   ctx.clearRect(0, 0, width, height);
-  set_parameters();
-  if (valid == 1) draw_grid();
+  setParameters();
+  if (valid == 1) drawGrid();
 });
 
 next_button.addEventListener("click", () => {
-  console.log(dp);
   if (flag) {
     if (times_next_called == 0) {
       if (slope == Number.MAX_SAFE_INTEGER) {
@@ -324,7 +332,6 @@ next_button.addEventListener("click", () => {
         highlight(currx + 1, curry + 1, possible_color);
         highlight(currx, curry + 1, possible_color);
       } else if (slope == Number.MIN_SAFE_INTEGER) {
-        console.log("hi1");
         highlight(currx, curry, chosen_color);
         highlight(currx + 1, curry - 1, possible_color);
         highlight(currx, curry - 1, possible_color);
@@ -353,9 +360,9 @@ next_button.addEventListener("click", () => {
     } else if (times_next_called % 2 == 1) {
       // mark the chosen path pixel
       if (slope >= 0 && (currx < point2[0] || curry < point2[1])) {
-        handle_next();
+        handleNext();
       } else if (slope < 0 && (currx < point2[0] || curry > point2[1])) {
-        handle_next();
+        handleNext();
       }
     } else if (times_next_called % 2 == 0) {
       // highlight the possible pixels
@@ -429,11 +436,9 @@ next_button.addEventListener("click", () => {
 });
 
 prev_button.addEventListener("click", () => {
-  // console.log("before : ", dp, dp.length);
   if (times_next_called > 0) {
     if (times_next_called % 2 == 1) {
       // last move was highlighting , undo the highlighting and reset the coordinates
-      // console.log("slope : ", slope);
       let delx, delx1, dely1, dely;
       if (slope == Number.MAX_SAFE_INTEGER) {
         // would have highlighted north east and north undo it
@@ -452,7 +457,6 @@ prev_button.addEventListener("click", () => {
         delx1 = currx + 1;
         dely1 = curry + 1;
         dely = curry;
-        // console.log(delx, delx1, dely1, dely);
       } else if (slope > 1) {
         // north and north east
         delx = currx;
@@ -497,7 +501,6 @@ prev_button.addEventListener("click", () => {
         }
       } else if (slope > 1 && dp.length > 0) {
         let last = dp.pop();
-        console.log("here : ", last);
         if (last < 0) {
           highlight(currx, curry, possible_color);
           highlight(currx + 1, curry, possible_color);
@@ -536,7 +539,6 @@ prev_button.addEventListener("click", () => {
       }
     }
     times_next_called -= 1;
-    // console.log("after : ", dp);
     let X1 = (point1[0] + 0.5) * block_size;
     let Y1 = height - (point1[1] + 0.5) * block_size;
     let X2 = (point2[0] + 0.5) * block_size;
