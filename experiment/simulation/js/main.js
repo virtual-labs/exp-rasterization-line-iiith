@@ -50,54 +50,23 @@ let valid = true;
 // let submit_button = document.getElementById("submit");
 // store the number of times next is called
 let times_next_called = 0;
-formx1.onchange = function () {
-  const x1 = formx1.value;
-  if (x1 < LEFT || x1 > RIGHT) {
-    valid = false;
-    formx1.classList.add("highlight-error");
-    errorx1.innerHTML = `x should be between ${LEFT} and  + ${RIGHT}`;
+
+function validateForm(form, min, max, errorClass) {
+  const value = form.value;
+  if (value < min || value > max) {
+    form.classList.add("highlight-error");
+    errorClass.innerHTML = `value should be between ${min} and ${max}`;
   } else {
     valid = true;
-    formx1.classList.remove("highlight-error");
-    errorx1.innerHTML = EMPTY;
+    form.classList.remove("highlight-error");
+    errorClass.innerHTML = EMPTY;
   }
-};
-formy1.onchange = function () {
-  const y1 = formy1.value;
-  if (y1 < BOTTOM || y1 > TOP) {
-    valid = false;
-    formy1.classList.add("highlight-error");
-    errory1.innerHTML = `y should be between  ${BOTTOM} and +${TOP}`;
-  } else {
-    valid = true;
-    formy1.classList.remove("highlight-error");
-    errory1.innerHTML = EMPTY;
-  }
-};
-formx2.onchange = function () {
-  const x2 = formx2.value;
-  if (x2 < LEFT || x2 > RIGHT) {
-    formx2.classList.add("highlight-error");
-    valid = false;
-    errorx2.innerHTML = `x should be between ${LEFT} and  + ${RIGHT}`;
-  } else {
-    valid = true;
-    formx2.classList.remove("highlight-error");
-    errorx2.innerHTML = EMPTY;
-  }
-};
-formy2.onchange = function () {
-  const y2 = formy2.value;
-  if (y2 < BOTTOM || y2 > TOP) {
-    formy2.classList.add("highlight-error");
-    valid = false;
-    errory2.innerHTML = `y should be between ${BOTTOM} and ${TOP}`;
-  } else {
-    valid = true;
-    formy1.classList.remove("highlight-error");
-    errory2.innerHTML = EMPTY;
-  }
-};
+}
+// formx1.onchange = validateForm(formx1, formx1.value, LEFT, RIGHT, errorx1);
+formx1.onchange = () => validateForm(formx1, LEFT, RIGHT, errorx1);
+formy1.onchange = () => validateForm(formy1, BOTTOM, TOP, errory1);
+formx2.onchange = () => validateForm(formx2, LEFT, RIGHT, errorx2);
+formy2.onchange = () => validateForm(formy2, BOTTOM, TOP, errory2);
 function makeAxis() {
   const maxx = (MAXX / 2 + 1 + 0.5) * block_size;
   const maxy = height - (MAXY / 2 + 1 + 0.5) * block_size;
