@@ -1,3 +1,4 @@
+"use-strict";
 const submit_button = document.getElementById("submit");
 const next_button = document.getElementById("next-button");
 const prev_button = document.getElementById("prev-button");
@@ -10,16 +11,15 @@ const errorx1 = document.getElementById("error-x1");
 const errorx2 = document.getElementById("error-x2");
 const errory1 = document.getElementById("error-y1");
 const errory2 = document.getElementById("error-y2");
+const EMPTY = "";
 // get the canvas
-
-let canvas = document.getElementById("canvas");
+const canvas = document.getElementById("canvas");
 // get the context
 let ctx = canvas.getContext("2d");
 const height = 600;
 const width = 1200;
 canvas.height = height;
 canvas.width = width;
-
 const chosen_color = "green";
 const possible_color = "blue";
 // determine the number of divisions based on the distance between the two points
@@ -32,7 +32,10 @@ const grid_color = "white";
 const originx = 45;
 const originy = 23;
 const block_size = height / divisions;
-
+const LEFT = -45;
+const RIGHT = 44;
+const TOP = 21;
+const BOTTOM = -23;
 // define the set of coordinates depict them as 2-d vectors
 let point1 = [];
 let point2 = [];
@@ -43,70 +46,65 @@ let slope = 0;
 let currx, curry;
 let dx, dy;
 let last_move_direction = "";
-let valid = 1;
-
+let valid = true;
 // let submit_button = document.getElementById("submit");
 // store the number of times next is called
 let times_next_called = 0;
-
 formx1.onchange = function () {
-  let x1 = formx1.value;
-  if (x1 < -45 || x1 > 44) {
-    valid = 0;
-    formx1.style.border = "1px solid red";
-    errorx1.innerHTML = "x should be between " + "-45" + " and " + "44";
+  const x1 = formx1.value;
+  if (x1 < LEFT || x1 > RIGHT) {
+    valid = false;
+    formx1.classList.add("highlight-error");
+    errorx1.innerHTML = `x should be between ${LEFT} and  + ${RIGHT}`;
   } else {
-    valid = 1;
-    formx1.style.border = "none";
-    errorx1.innerHTML = "";
+    valid = true;
+    formx1.classList.remove("highlight-error");
+    errorx1.innerHTML = EMPTY;
   }
 };
 formy1.onchange = function () {
-  let y1 = formy1.value;
-  if (y1 < -23 || y1 > 21) {
-    valid = 0;
-    formy1.style.border = "1px solid red";
-    errory1.innerHTML = "y should be between " + "-23" + " and " + "21";
+  const y1 = formy1.value;
+  if (y1 < BOTTOM || y1 > TOP) {
+    valid = false;
+    formy1.classList.add("highlight-error");
+    errory1.innerHTML = `y should be between  ${BOTTOM} and +${TOP}`;
   } else {
-    valid = 1;
-    formy1.style.border = "none";
-
-    errory1.innerHTML = "";
+    valid = true;
+    formy1.classList.remove("highlight-error");
+    errory1.innerHTML = EMPTY;
   }
 };
 formx2.onchange = function () {
-  let x2 = formx2.value;
-  if (x2 < -45 || x2 > 44) {
-    formx2.style.border = "1px solid red";
-    valid = 0;
-    errorx2.innerHTML = "x should be between " + "-45" + " and " + "44";
+  const x2 = formx2.value;
+  if (x2 < LEFT || x2 > RIGHT) {
+    formx2.classList.add("highlight-error");
+    valid = false;
+    errorx2.innerHTML = `x should be between ${LEFT} and  + ${RIGHT}`;
   } else {
-    valid = 1;
-    formx2.style.border = "none";
-   
-    errorx2.innerHTML = "";
+    valid = true;
+    formx2.classList.remove("highlight-error");
+    errorx2.innerHTML = EMPTY;
   }
 };
 formy2.onchange = function () {
-  let y2 = formy2.value;
-  if (y2 < -23 || y2 > 21) {
-    formy2.style.border = "1px solid red";
-    valid = 0;
-    errory2.innerHTML = "y should be between " + "-23" + " and " + "21";
+  const y2 = formy2.value;
+  if (y2 < BOTTOM || y2 > TOP) {
+    formy2.classList.add("highlight-error");
+    valid = false;
+    errory2.innerHTML = `y should be between ${BOTTOM} and ${TOP}`;
   } else {
-    valid = 1;
-    formy2.style.border = "none";
-  
-    errory2.innerHTML = "";
+    valid = true;
+    formy1.classList.remove("highlight-error");
+    errory2.innerHTML = EMPTY;
   }
 };
 function makeAxis() {
-  let maxx = (MAXX / 2 + 1 + 0.5) * block_size;
-  let maxy = height - (MAXY / 2 + 1 + 0.5) * block_size;
-  let miny = height - (MINY - 1 + 0.5) * block_size;
-  let mxx = (MAXX + 1 + 0.5) * block_size;
-  let mnx = (MINX - 1 + 0.5) * block_size;
-  let mxy = height - (MAXY + 1 + 0.5) * block_size;
+  const maxx = (MAXX / 2 + 1 + 0.5) * block_size;
+  const maxy = height - (MAXY / 2 + 1 + 0.5) * block_size;
+  const miny = height - (MINY - 1 + 0.5) * block_size;
+  const mxx = (MAXX + 1 + 0.5) * block_size;
+  const mnx = (MINX - 1 + 0.5) * block_size;
+  const mxy = height - (MAXY + 1 + 0.5) * block_size;
   ctx.beginPath();
   ctx.lineWidth = 2;
   ctx.strokeStyle = "red";
@@ -119,6 +117,17 @@ function makeAxis() {
   ctx.moveTo(mnx, maxy);
   ctx.lineTo(mxx, maxy);
   ctx.stroke();
+}
+function getSlopeLine() {
+  if (point1[0] == point2[0]) {
+    if (point1[1] > point2[1]) {
+      return Math.MIN_SAFE_INTEGER;
+    } else {
+      return Math.MAX_SAFE_INTEGER;
+    }
+  } else {
+    return (point2[1] - point1[1]) / (point2[0] - point1[0]);
+  }
 }
 function setParameters() {
   // get  & set the coordinates from the input form
@@ -134,16 +143,14 @@ function setParameters() {
 
   point1 = [x1, y1];
   point2 = [x2, y2];
-  flag = 1;
+  display_canvas = true;
   dy = Math.abs(y2 - y1);
   dx = Math.abs(x2 - x1);
   currx = point1[0];
   curry = point1[1];
-  if (point1[0] == point2[0]) {
-    if (point1[1] > point2[1]) slope = Number.MIN_SAFE_INTEGER;
-    else slope = Number.MAX_SAFE_INTEGER;
-  } else {
-    slope = (point2[1] - point1[1]) / (point2[0] - point1[0]);
+  slope = getSlopeLine();
+
+  if (slope != Math.MIN_SAFE_INTEGER && slope != Math.MAX_SAFE_INTEGER) {
     if (slope > 1) {
       // set the parameter
       decision_parameter = 2 * dx - dy;
@@ -160,8 +167,8 @@ function setParameters() {
 }
 
 function highlight(x, y, color) {
-  let X = (x + 0.5) * block_size;
-  let Y = height - (y + 0.5) * block_size;
+  const X = (x + 0.5) * block_size;
+  const Y = height - (y + 0.5) * block_size;
   ctx.beginPath();
   ctx.fillStyle = color;
   ctx.fillRect(X, Y, height / (2 * divisions), height / (2 * divisions));
@@ -177,21 +184,21 @@ function drawGrid() {
   ctx.beginPath();
   ctx.strokeStyle = "grey";
   ctx.lineWidth = 0.5;
-  for (var i = 0; i <= width; i += height / divisions) {
+  for (let i = 0; i <= width; i += height / divisions) {
     ctx.moveTo(i, 0);
     ctx.lineTo(i, height);
   }
 
-  for (var i = 0; i <= width; i += height / divisions) {
+  for (let i = 0; i <= width; i += height / divisions) {
     ctx.moveTo(0, i);
     ctx.lineTo(width, i);
   }
   ctx.stroke();
 
-  let X1 = (point1[0] + 0.5) * block_size;
-  let Y1 = height - (point1[1] + 0.5) * block_size;
-  let X2 = (point2[0] + 0.5) * block_size;
-  let Y2 = height - (point2[1] + 0.5) * block_size;
+  const X1 = (point1[0] + 0.5) * block_size;
+  const Y1 = height - (point1[1] + 0.5) * block_size;
+  const X2 = (point2[0] + 0.5) * block_size;
+  const Y2 = height - (point2[1] + 0.5) * block_size;
   ctx.beginPath();
   ctx.arc(X1, Y1, 1, 0, 2 * Math.PI, false);
   ctx.lineWidth = 3;
@@ -215,11 +222,11 @@ function drawGrid() {
 function handleNext() {
   dp.push(decision_parameter);
   // check for the cases
-  if (slope == Number.MAX_SAFE_INTEGER) {
+  if (slope === Number.MAX_SAFE_INTEGER) {
     highlight(currx + 1, curry + 1, "red");
     curry += 1;
     highlight(currx, curry, chosen_color);
-  } else if (slope == Number.MIN_SAFE_INTEGER) {
+  } else if (slope === Number.MIN_SAFE_INTEGER) {
     highlight(currx + 1, curry - 1, "red");
     curry -= 1;
     highlight(currx, curry, chosen_color);
@@ -285,7 +292,7 @@ function handleNext() {
       currx += 1;
       highlight(currx, curry, chosen_color);
     }
-  } else if (slope == Number.MIN_SAFE_INTEGER) {
+  } else if (slope === Number.MIN_SAFE_INTEGER) {
   } else {
     if (decision_parameter < 0) {
       last_move_direction = "south";
@@ -306,7 +313,6 @@ function handleNext() {
     }
   }
 }
-function hadndlePrevious() {}
 submit_button.addEventListener("click", (event) => {
   event.preventDefault();
   times_next_called = 0;
@@ -325,7 +331,7 @@ submit_button.addEventListener("click", (event) => {
 });
 
 next_button.addEventListener("click", () => {
-  if (flag) {
+  if (display_canvas) {
     if (times_next_called == 0) {
       if (slope == Number.MAX_SAFE_INTEGER) {
         highlight(currx, curry, chosen_color);
@@ -565,7 +571,7 @@ prev_button.addEventListener("click", () => {
 
 reset_button.addEventListener("click", () => {
   dp = [];
-  flag = 0;
+  display_canvas = false;
   last_move_direction = "";
   times_next_called = 0;
   point1 = [];
