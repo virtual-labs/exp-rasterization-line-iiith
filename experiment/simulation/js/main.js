@@ -296,7 +296,9 @@ submit_button.addEventListener("click", (event) => {
   ctx.beginPath();
   ctx.clearRect(0, 0, width, height);
   setParameters();
-  if (valid == 1) drawGrid();
+  if (valid === true) {
+    drawGrid()
+  };
 });
 
 next_button.addEventListener("click", () => {
