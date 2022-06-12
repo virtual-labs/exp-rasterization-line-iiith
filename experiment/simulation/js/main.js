@@ -88,7 +88,7 @@ function makeAxis() {
   ctx.stroke();
 }
 function getSlopeLine() {
-  if (point1[0] == point2[0]) {
+  if (point1[0] === point2[0]) {
     if (point1[1] > point2[1]) {
       return Math.MIN_SAFE_INTEGER;
     } else {
@@ -119,7 +119,7 @@ function setParameters() {
   curry = point1[1];
   slope = getSlopeLine();
 
-  if (slope != Math.MIN_SAFE_INTEGER && slope != Math.MAX_SAFE_INTEGER) {
+  if (slope !== Math.MIN_SAFE_INTEGER && slope !== Math.MAX_SAFE_INTEGER) {
     if (slope > 1) {
       // set the parameter
       decision_parameter = 2 * dx - dy;
@@ -301,12 +301,12 @@ submit_button.addEventListener("click", (event) => {
 
 next_button.addEventListener("click", () => {
   if (display_canvas) {
-    if (times_next_called == 0) {
-      if (slope == Number.MAX_SAFE_INTEGER) {
+    if (times_next_called === 0) {
+      if (slope === Number.MAX_SAFE_INTEGER) {
         highlight(currx, curry, chosen_color);
         highlight(currx + 1, curry + 1, possible_color);
         highlight(currx, curry + 1, possible_color);
-      } else if (slope == Number.MIN_SAFE_INTEGER) {
+      } else if (slope === Number.MIN_SAFE_INTEGER) {
         highlight(currx, curry, chosen_color);
         highlight(currx + 1, curry - 1, possible_color);
         highlight(currx, curry - 1, possible_color);
@@ -332,14 +332,14 @@ next_button.addEventListener("click", () => {
         highlight(currx + 1, curry - 1, possible_color);
         highlight(currx, curry - 1, possible_color);
       }
-    } else if (times_next_called % 2 == 1) {
+    } else if (times_next_called % 2 === 1) {
       // mark the chosen path pixel
       if (slope >= 0 && (currx < point2[0] || curry < point2[1])) {
         handleNext();
       } else if (slope < 0 && (currx < point2[0] || curry > point2[1])) {
         handleNext();
       }
-    } else if (times_next_called % 2 == 0) {
+    } else if (times_next_called % 2 === 0) {
       // highlight the possible pixels
 
       if (
@@ -355,7 +355,7 @@ next_button.addEventListener("click", () => {
         // East
         highlight(currx + 1, curry, possible_color);
       } else if (
-        (slope == Number.MAX_SAFE_INTEGER || slope > 1) &&
+        (slope === Number.MAX_SAFE_INTEGER || slope > 1) &&
         (currx < point2[0] || curry < point2[1])
       ) {
         highlight(currx, curry, chosen_color);
@@ -375,7 +375,7 @@ next_button.addEventListener("click", () => {
         // south east move krna show kro
         highlight(currx + 1, curry - 1, possible_color);
       } else if (
-        (slope == Number.MIN_SAFE_INTEGER || slope < -1) &&
+        (slope === Number.MIN_SAFE_INTEGER || slope < -1) &&
         (currx < point2[0] || curry > point2[1])
       ) {
         // possible option is to move south or movee south east
@@ -385,10 +385,10 @@ next_button.addEventListener("click", () => {
       }
     }
     // increment the counter
-    let X1 = (point1[0] + 0.5) * block_size;
-    let Y1 = height - (point1[1] + 0.5) * block_size;
-    let X2 = (point2[0] + 0.5) * block_size;
-    let Y2 = height - (point2[1] + 0.5) * block_size;
+    const X1 = (point1[0] + 0.5) * block_size;
+    const Y1 = height - (point1[1] + 0.5) * block_size;
+    const X2 = (point2[0] + 0.5) * block_size;
+    const Y2 = height - (point2[1] + 0.5) * block_size;
 
     ctx.beginPath();
     ctx.arc(X1, Y1, 1, 0, 2 * Math.PI, false);
@@ -412,16 +412,16 @@ next_button.addEventListener("click", () => {
 
 prev_button.addEventListener("click", () => {
   if (times_next_called > 0) {
-    if (times_next_called % 2 == 1) {
+    if (times_next_called % 2 === 1) {
       // last move was highlighting , undo the highlighting and reset the coordinates
       let delx, delx1, dely1, dely;
-      if (slope == Number.MAX_SAFE_INTEGER) {
+      if (slope === Number.MAX_SAFE_INTEGER) {
         // would have highlighted north east and north undo it
         delx = currx;
         delx1 = currx + 1;
         dely1 = curry + 1;
         dely = curry + 1;
-      } else if (slope == Number.MIN_SAFE_INTEGER) {
+      } else if (slope === Number.MIN_SAFE_INTEGER) {
         delx = currx;
         delx1 = currx + 1;
         dely1 = curry - 1;
@@ -453,17 +453,17 @@ prev_button.addEventListener("click", () => {
       highlight(delx1, dely1, "black");
     } else {
       // last move was choosing a vertex , move back to the highlighting step
-      if (slope == Number.MAX_SAFE_INTEGER) {
+      if (slope === Number.MAX_SAFE_INTEGER) {
         highlight(currx, curry, possible_color);
         highlight(currx + 1, curry, possible_color);
         curry -= 1;
-      } else if (slope == Number.MIN_SAFE_INTEGER) {
+      } else if (slope === Number.MIN_SAFE_INTEGER) {
         highlight(currx, curry, possible_color);
         highlight(currx + 1, curry, possible_color);
         curry += 1;
       } else if (slope >= 0 && slope <= 1 && dp.length > 0) {
         // east and north east are the only options
-        let last = dp.pop();
+        const last = dp.pop();
         if (last < 0) {
           highlight(currx, curry, possible_color);
           highlight(currx, curry + 1, possible_color);
@@ -475,7 +475,7 @@ prev_button.addEventListener("click", () => {
           currx -= 1;
         }
       } else if (slope > 1 && dp.length > 0) {
-        let last = dp.pop();
+        const last = dp.pop();
         if (last < 0) {
           highlight(currx, curry, possible_color);
           highlight(currx + 1, curry, possible_color);
@@ -487,7 +487,7 @@ prev_button.addEventListener("click", () => {
           currx -= 1;
         }
       } else if (slope >= -1 && slope < 0 && dp.length > 0) {
-        let last = dp.pop();
+         const last = dp.pop();
         if (last >= 0) {
           highlight(currx, curry, possible_color);
           highlight(currx, curry + 1, possible_color);
@@ -500,7 +500,7 @@ prev_button.addEventListener("click", () => {
         }
       } else if (dp.length > 0) {
         // south ya south east
-        let last = dp.pop();
+        const last = dp.pop();
         if (last >= 0) {
           highlight(currx, curry, possible_color);
           highlight(currx - 1, curry, possible_color);
@@ -514,10 +514,10 @@ prev_button.addEventListener("click", () => {
       }
     }
     times_next_called -= 1;
-    let X1 = (point1[0] + 0.5) * block_size;
-    let Y1 = height - (point1[1] + 0.5) * block_size;
-    let X2 = (point2[0] + 0.5) * block_size;
-    let Y2 = height - (point2[1] + 0.5) * block_size;
+    const X1 = (point1[0] + 0.5) * block_size;
+    const Y1 = height - (point1[1] + 0.5) * block_size;
+    const X2 = (point2[0] + 0.5) * block_size;
+    const Y2 = height - (point2[1] + 0.5) * block_size;
 
     ctx.beginPath();
     ctx.arc(X1, Y1, 1, 0, 2 * Math.PI, false);
