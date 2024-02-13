@@ -1,0 +1,90 @@
+{
+    "version": 2.0,
+    "questions": [
+      {
+        "question": "1. What is the purpose of the Digital Differential Analyzer (DDA) algorithm in Line Rasterization?",
+        "answers": {
+          "a": "To sort pixels in ascending order.",
+          "b": "To calculate derivatives of geometric lines.",
+          "c": "To transform continuous lines into pixels.",
+          "d": "To analyze digital signals."
+        },
+        "correctAnswer": "b",
+        "explanations": {
+          "a": "Incorrect. DDA is not used for sorting pixels.",
+          "b": "Correct. DDA is used for calculating derivatives of geometric lines.",
+          "c": "Incorrect. DDA is not responsible for transforming continuous lines into pixels.",
+          "d": "Incorrect. DDA is not designed for analyzing digital signals."
+        },
+        "difficulty": "beginner"
+      },
+      {
+        "question": "2. Which parameter plays a crucial role in Bresenham's Line algorithm for Line Rasterization?",
+        "answers": {
+          "a": "Slope of the line",
+          "b": "Frame buffer size",
+          "c": "Color intensity",
+          "d": "Screen resolution"
+        },
+        "correctAnswer": "a",
+        "explanations": {
+          "a": "Correct. The slope of the line is a crucial parameter in Bresenham's Line algorithm.",
+          "b": "Incorrect. Frame buffer size is not a parameter in Bresenham's Line algorithm.",
+          "c": "Incorrect. Color intensity is not a parameter in Bresenham's Line algorithm.",
+          "d": "Incorrect. Screen resolution is not a parameter in Bresenham's Line algorithm."
+        },
+        "difficulty": "intermediate"
+      },
+      {
+        "question": "3. What advantage does Xiaolin Wu's algorithm offer over Bresenham's Line algorithm?",
+        "answers": {
+          "a": "Faster execution time",
+          "b": "Higher accuracy",
+          "c": "Anti-aliasing support",
+          "d": "Simpler implementation"
+        },
+        "correctAnswer": "c",
+        "explanations": {
+          "a": "Incorrect. Xiaolin Wu's algorithm does not necessarily offer faster execution time.",
+          "b": "Incorrect. Higher accuracy is not a specific advantage of Xiaolin Wu's algorithm.",
+          "c": "Correct. Xiaolin Wu's algorithm is known for its anti-aliasing support.",
+          "d": "Incorrect. Xiaolin Wu's algorithm is often considered more complex than Bresenham's."
+        },
+        "difficulty": "intermediate"
+      },
+      {
+        "question": "4. How does Xiaolin Wu's algorithm achieve anti-aliasing in Line Rasterization?",
+        "answers": {
+          "a": "By using a higher screen resolution",
+          "b": "By adjusting pixel intensities based on neighboring pixels",
+          "c": "By implementing a faster execution time",
+          "d": "By applying a color filter"
+        },
+        "correctAnswer": "b",
+        "explanations": {
+          "a": "Incorrect. Xiaolin Wu's algorithm does not rely on a higher screen resolution for anti-aliasing.",
+          "b": "Correct. Xiaolin Wu's algorithm adjusts pixel intensities based on neighboring pixels to achieve anti-aliasing.",
+          "c": "Incorrect. The algorithm's execution time is not directly related to anti-aliasing.",
+          "d": "Incorrect. Applying a color filter is not the mechanism for anti-aliasing in Xiaolin Wu's algorithm."
+        },
+        "difficulty": "advanced"
+      },
+      {
+        "question": "5. What is the key challenge addressed by line rasterization algorithms like Bresenham's in computer graphics?",
+        "answers": {
+          "a": "Enhancing color reproduction",
+          "b": "Efficiently transforming 3D objects into 2D representation",
+          "c": "Minimizing pixel size",
+          "d": "Optimizing screen brightness"
+        },
+        "correctAnswer": "b",
+        "explanations": {
+          "a": "Incorrect. Color reproduction is not the primary focus of line rasterization algorithms.",
+          "b": "Correct. Line rasterization algorithms like Bresenham's aim to efficiently transform 3D objects into 2D representation for display.",
+          "c": "Incorrect. Minimizing pixel size is not the central challenge addressed by line rasterization algorithms.",
+          "d": "Incorrect. Optimizing screen brightness is not the primary concern of line rasterization algorithms."
+        },
+        "difficulty": "advanced"
+      }
+    ]
+  }
