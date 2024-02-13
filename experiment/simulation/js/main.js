@@ -1,3 +1,4 @@
+"use-strict";
 const submit_button = document.getElementById("submit");
 const next_button = document.getElementById("next-button");
 const prev_button = document.getElementById("prev-button");
@@ -10,50 +11,69 @@ const errorx1 = document.getElementById("error-x1");
 const errorx2 = document.getElementById("error-x2");
 const errory1 = document.getElementById("error-y1");
 const errory2 = document.getElementById("error-y2");
+const EMPTY = "";
 // get the canvas
-
-let canvas = document.getElementById("canvas");
+const canvas = document.getElementById("canvas");
 // get the context
 let ctx = canvas.getContext("2d");
-let chosen_color = "green";
-let possible_color = "blue";
+const height = 600;
+const width = 1200;
+canvas.height = height;
+canvas.width = width;
+const chosen_color = "green";
+const possible_color = "blue";
+// determine the number of divisions based on the distance between the two points
+const divisions = 45;
+const MAXX = 88;
+const MINX = -100;
+const MAXY = 44;
+const MINY = 0;
+const grid_color = "white";
+const originx = 45;
+const originy = 23;
+const block_size = height / divisions;
+const LEFT = -45;
+const RIGHT = 44;
+const TOP = 21;
+const BOTTOM = -23;
 // define the set of coordinates depict them as 2-d vectors
 let point1 = [];
 let point2 = [];
 let decision_parameter;
 let dp = [];
 // fix the heights of the canvas
-let height = 600;
-let width = 1200;
-canvas.height = height;
-canvas.width = width;
-// determine the number of divisions based on the distance between the two points
-let divisions = 45;
-let MAXX = 88;
-let MINX = 0;
-let MAXY = 44;
-let MINY = 0;
-let grid_color = "white";
-let originx = 45;
-let originy = 23;
 let slope = 0;
 let currx, curry;
 let dx, dy;
-let block_size = height / divisions;
 let last_move_direction = "";
-let flag = 0;
-
+let valid = true;
 // let submit_button = document.getElementById("submit");
 // store the number of times next is called
 let times_next_called = 0;
 
-function make_axis() {
-  let maxx = (MAXX / 2 + 1 + 0.5) * block_size;
-  let maxy = height - (MAXY / 2 + 1 + 0.5) * block_size;
-  let miny = height - (MINY - 1 + 0.5) * block_size;
-  let mxx = (MAXX + 1 + 0.5) * block_size;
-  let mnx = (MINX - 1 + 0.5) * block_size;
-  let mxy = height - (MAXY + 1 + 0.5) * block_size;
+function validateForm(form, min, max, errorClass) {
+  const value = form.value;
+  if (value < min || value > max) {
+    form.classList.add("highlight-error");
+    errorClass.innerHTML = `value should be between ${min} and ${max}`;
+  } else {
+    valid = true;
+    form.classList.remove("highlight-error");
+    errorClass.innerHTML = EMPTY;
+  }
+}
+// formx1.onchange = validateForm(formx1, formx1.value, LEFT, RIGHT, errorx1);
+formx1.onchange = () => validateForm(formx1, LEFT, RIGHT, errorx1);
+formy1.onchange = () => validateForm(formy1, BOTTOM, TOP, errory1);
+formx2.onchange = () => validateForm(formx2, LEFT, RIGHT, errorx2);
+formy2.onchange = () => validateForm(formy2, BOTTOM, TOP, errory2);
+function makeAxis() {
+  const maxx = (MAXX / 2 + 1 + 0.5) * block_size;
+  const maxy = height - (MAXY / 2 + 1 + 0.5) * block_size;
+  const miny = height - (MINY - 1 + 0.5) * block_size;
+  const mxx = (MAXX + 1 + 0.5) * block_size;
+  const mnx = (MINX - 1 + 0.5) * block_size;
+  const mxy = height - (MAXY + 1 + 0.5) * block_size;
   ctx.beginPath();
   ctx.lineWidth = 2;
   ctx.strokeStyle = "red";
@@ -67,7 +87,18 @@ function make_axis() {
   ctx.lineTo(mxx, maxy);
   ctx.stroke();
 }
-function set_parameters() {
+function getSlopeLine() {
+  if (point1[0] === point2[0]) {
+    if (point1[1] > point2[1]) {
+      return Math.MIN_SAFE_INTEGER;
+    } else {
+      return Math.MAX_SAFE_INTEGER;
+    }
+  } else {
+    return (point2[1] - point1[1]) / (point2[0] - point1[0]);
+  }
+}
+function setParameters() {
   // get  & set the coordinates from the input form
   let x1 = Number(document.getElementById("x1").value);
   let y1 = Number(document.getElementById("y1").value);
@@ -81,16 +112,14 @@ function set_parameters() {
 
   point1 = [x1, y1];
   point2 = [x2, y2];
-  flag = 1;
+  display_canvas = true;
   dy = Math.abs(y2 - y1);
   dx = Math.abs(x2 - x1);
   currx = point1[0];
   curry = point1[1];
-  if (point1[0] == point2[0]) {
-    if (point1[1] > point2[1]) slope = Number.MIN_SAFE_INTEGER;
-    else slope = Number.MAX_SAFE_INTEGER;
-  } else {
-    slope = (point2[1] - point1[1]) / (point2[0] - point1[0]);
+  slope = getSlopeLine();
+
+  if (slope !== Math.MIN_SAFE_INTEGER && slope !== Math.MAX_SAFE_INTEGER) {
     if (slope > 1) {
       // set the parameter
       decision_parameter = 2 * dx - dy;
@@ -107,8 +136,8 @@ function set_parameters() {
 }
 
 function highlight(x, y, color) {
-  let X = (x + 0.5) * block_size;
-  let Y = height - (y + 0.5) * block_size;
+  const X = (x + 0.5) * block_size;
+  const Y = height - (y + 0.5) * block_size;
   ctx.beginPath();
   ctx.fillStyle = color;
   ctx.fillRect(X, Y, height / (2 * divisions), height / (2 * divisions));
@@ -118,27 +147,27 @@ function highlight(x, y, color) {
   ctx.stroke();
 }
 
-function draw_grid() {
+function drawGrid() {
   // parameters set by now
   // draw the grid
   ctx.beginPath();
   ctx.strokeStyle = "grey";
   ctx.lineWidth = 0.5;
-  for (var i = 0; i <= width; i += height / divisions) {
+  for (let i = 0; i <= width; i += height / divisions) {
     ctx.moveTo(i, 0);
     ctx.lineTo(i, height);
   }
 
-  for (var i = 0; i <= width; i += height / divisions) {
+  for (let i = 0; i <= width; i += height / divisions) {
     ctx.moveTo(0, i);
     ctx.lineTo(width, i);
   }
   ctx.stroke();
 
-  let X1 = (point1[0] + 0.5) * block_size;
-  let Y1 = height - (point1[1] + 0.5) * block_size;
-  let X2 = (point2[0] + 0.5) * block_size;
-  let Y2 = height - (point2[1] + 0.5) * block_size;
+  const X1 = (point1[0] + 0.5) * block_size;
+  const Y1 = height - (point1[1] + 0.5) * block_size;
+  const X2 = (point2[0] + 0.5) * block_size;
+  const Y2 = height - (point2[1] + 0.5) * block_size;
   ctx.beginPath();
   ctx.arc(X1, Y1, 1, 0, 2 * Math.PI, false);
   ctx.lineWidth = 3;
@@ -149,24 +178,24 @@ function draw_grid() {
   ctx.strokeStyle = "red";
   ctx.lineWidth = 5;
   ctx.stroke();
-  make_axis();
+  makeAxis();
 
   ctx.beginPath();
-  ctx.lineWidth = 1;
+  ctx.lineWidth = 2;
   ctx.strokeStyle = "yellow";
   ctx.moveTo(X1, Y1);
   ctx.lineTo(X2, Y2);
   ctx.stroke();
 }
 
-function handle_next() {
+function handleNext() {
   dp.push(decision_parameter);
   // check for the cases
-  if (slope == Number.MAX_SAFE_INTEGER) {
+  if (slope === Number.MAX_SAFE_INTEGER) {
     highlight(currx + 1, curry + 1, "red");
     curry += 1;
     highlight(currx, curry, chosen_color);
-  } else if (slope == Number.MIN_SAFE_INTEGER) {
+  } else if (slope === Number.MIN_SAFE_INTEGER) {
     highlight(currx + 1, curry - 1, "red");
     curry -= 1;
     highlight(currx, curry, chosen_color);
@@ -232,7 +261,7 @@ function handle_next() {
       currx += 1;
       highlight(currx, curry, chosen_color);
     }
-  } else if (slope == Number.MIN_SAFE_INTEGER) {
+  } else if (slope === Number.MIN_SAFE_INTEGER) {
   } else {
     if (decision_parameter < 0) {
       last_move_direction = "south";
@@ -253,7 +282,6 @@ function handle_next() {
     }
   }
 }
-function handle_previous() {}
 submit_button.addEventListener("click", (event) => {
   event.preventDefault();
   times_next_called = 0;
@@ -267,62 +295,20 @@ submit_button.addEventListener("click", (event) => {
   decision_parameter = 0;
   ctx.beginPath();
   ctx.clearRect(0, 0, width, height);
-  set_parameters();
-
-  let x1 = point1[0],
-    y1 = point1[1];
-  let x2 = point2[0],
-    y2 = point2[1];
-
-  let error = false;
-  if (x1 < MINX || x1 > MAXX) {
-    error = true;
-    formx1.style.border = "1px solid red";
-    errorx1.innerHTML = "x should be between " + MINX + " and " + MAXX;
-  }
-  if (y1 < MINY || y1 > MAXY) {
-    error = true;
-    formy1.style.border = "1px solid red";
-    errory1.innerHTML = "y should be between " + MINY + " and " + MAXY;
- 
-  }
-  if (x2 < MINX || x2 > MAXX) {
-    error = true;
-    formx2.style.border = "1px solid red";
-    errorx2.innerHTML = "x should be between " + MINX + " and " + MAXX;
-  
-  }
-  if (y2 < MINY || y2 > MAXY) {
-    error = true;
-    formy2.style.border = "1px solid red";
-    errory2.innerHTML = "y should be between " + MINY + " and " + MAXY;
-  
-  }
-  if (error) {
-    return;
-  }
-  formx1.style.border = "none";
-  formy1.style.border = "none";
-  formx2.style.border = "none";
-  formy2.style.border = "none";
-  errorx1.innerHTML = "";
-  errory1.innerHTML = "";
-  errorx2.innerHTML = "";
-  errory2.innerHTML = "";
-
-  draw_grid();
+  setParameters();
+  if (valid === true) {
+    drawGrid()
+  };
 });
 
 next_button.addEventListener("click", () => {
-  console.log(dp);
-  if (flag) {
-    if (times_next_called == 0) {
-      if (slope == Number.MAX_SAFE_INTEGER) {
+  if (display_canvas) {
+    if (times_next_called === 0) {
+      if (slope === Number.MAX_SAFE_INTEGER) {
         highlight(currx, curry, chosen_color);
         highlight(currx + 1, curry + 1, possible_color);
         highlight(currx, curry + 1, possible_color);
-      } else if (slope == Number.MIN_SAFE_INTEGER) {
-        console.log("hi1");
+      } else if (slope === Number.MIN_SAFE_INTEGER) {
         highlight(currx, curry, chosen_color);
         highlight(currx + 1, curry - 1, possible_color);
         highlight(currx, curry - 1, possible_color);
@@ -348,14 +334,14 @@ next_button.addEventListener("click", () => {
         highlight(currx + 1, curry - 1, possible_color);
         highlight(currx, curry - 1, possible_color);
       }
-    } else if (times_next_called % 2 == 1) {
+    } else if (times_next_called % 2 === 1) {
       // mark the chosen path pixel
       if (slope >= 0 && (currx < point2[0] || curry < point2[1])) {
-        handle_next();
+        handleNext();
       } else if (slope < 0 && (currx < point2[0] || curry > point2[1])) {
-        handle_next();
+        handleNext();
       }
-    } else if (times_next_called % 2 == 0) {
+    } else if (times_next_called % 2 === 0) {
       // highlight the possible pixels
 
       if (
@@ -371,7 +357,7 @@ next_button.addEventListener("click", () => {
         // East
         highlight(currx + 1, curry, possible_color);
       } else if (
-        (slope == Number.MAX_SAFE_INTEGER || slope > 1) &&
+        (slope === Number.MAX_SAFE_INTEGER || slope > 1) &&
         (currx < point2[0] || curry < point2[1])
       ) {
         highlight(currx, curry, chosen_color);
@@ -391,7 +377,7 @@ next_button.addEventListener("click", () => {
         // south east move krna show kro
         highlight(currx + 1, curry - 1, possible_color);
       } else if (
-        (slope == Number.MIN_SAFE_INTEGER || slope < -1) &&
+        (slope === Number.MIN_SAFE_INTEGER || slope < -1) &&
         (currx < point2[0] || curry > point2[1])
       ) {
         // possible option is to move south or movee south east
@@ -401,10 +387,10 @@ next_button.addEventListener("click", () => {
       }
     }
     // increment the counter
-    let X1 = (point1[0] + 0.5) * block_size;
-    let Y1 = height - (point1[1] + 0.5) * block_size;
-    let X2 = (point2[0] + 0.5) * block_size;
-    let Y2 = height - (point2[1] + 0.5) * block_size;
+    const X1 = (point1[0] + 0.5) * block_size;
+    const Y1 = height - (point1[1] + 0.5) * block_size;
+    const X2 = (point2[0] + 0.5) * block_size;
+    const Y2 = height - (point2[1] + 0.5) * block_size;
 
     ctx.beginPath();
     ctx.arc(X1, Y1, 1, 0, 2 * Math.PI, false);
@@ -427,19 +413,17 @@ next_button.addEventListener("click", () => {
 });
 
 prev_button.addEventListener("click", () => {
-  // console.log("before : ", dp, dp.length);
   if (times_next_called > 0) {
-    if (times_next_called % 2 == 1) {
+    if (times_next_called % 2 === 1) {
       // last move was highlighting , undo the highlighting and reset the coordinates
-      // console.log("slope : ", slope);
       let delx, delx1, dely1, dely;
-      if (slope == Number.MAX_SAFE_INTEGER) {
+      if (slope === Number.MAX_SAFE_INTEGER) {
         // would have highlighted north east and north undo it
         delx = currx;
         delx1 = currx + 1;
         dely1 = curry + 1;
         dely = curry + 1;
-      } else if (slope == Number.MIN_SAFE_INTEGER) {
+      } else if (slope === Number.MIN_SAFE_INTEGER) {
         delx = currx;
         delx1 = currx + 1;
         dely1 = curry - 1;
@@ -450,7 +434,6 @@ prev_button.addEventListener("click", () => {
         delx1 = currx + 1;
         dely1 = curry + 1;
         dely = curry;
-        // console.log(delx, delx1, dely1, dely);
       } else if (slope > 1) {
         // north and north east
         delx = currx;
@@ -472,17 +455,17 @@ prev_button.addEventListener("click", () => {
       highlight(delx1, dely1, "black");
     } else {
       // last move was choosing a vertex , move back to the highlighting step
-      if (slope == Number.MAX_SAFE_INTEGER) {
+      if (slope === Number.MAX_SAFE_INTEGER) {
         highlight(currx, curry, possible_color);
         highlight(currx + 1, curry, possible_color);
         curry -= 1;
-      } else if (slope == Number.MIN_SAFE_INTEGER) {
+      } else if (slope === Number.MIN_SAFE_INTEGER) {
         highlight(currx, curry, possible_color);
         highlight(currx + 1, curry, possible_color);
         curry += 1;
       } else if (slope >= 0 && slope <= 1 && dp.length > 0) {
         // east and north east are the only options
-        let last = dp.pop();
+        const last = dp.pop();
         if (last < 0) {
           highlight(currx, curry, possible_color);
           highlight(currx, curry + 1, possible_color);
@@ -494,8 +477,7 @@ prev_button.addEventListener("click", () => {
           currx -= 1;
         }
       } else if (slope > 1 && dp.length > 0) {
-        let last = dp.pop();
-        console.log("here : ", last);
+        const last = dp.pop();
         if (last < 0) {
           highlight(currx, curry, possible_color);
           highlight(currx + 1, curry, possible_color);
@@ -507,7 +489,7 @@ prev_button.addEventListener("click", () => {
           currx -= 1;
         }
       } else if (slope >= -1 && slope < 0 && dp.length > 0) {
-        let last = dp.pop();
+         const last = dp.pop();
         if (last >= 0) {
           highlight(currx, curry, possible_color);
           highlight(currx, curry + 1, possible_color);
@@ -520,7 +502,7 @@ prev_button.addEventListener("click", () => {
         }
       } else if (dp.length > 0) {
         // south ya south east
-        let last = dp.pop();
+        const last = dp.pop();
         if (last >= 0) {
           highlight(currx, curry, possible_color);
           highlight(currx - 1, curry, possible_color);
@@ -534,11 +516,10 @@ prev_button.addEventListener("click", () => {
       }
     }
     times_next_called -= 1;
-    // console.log("after : ", dp);
-    let X1 = (point1[0] + 0.5) * block_size;
-    let Y1 = height - (point1[1] + 0.5) * block_size;
-    let X2 = (point2[0] + 0.5) * block_size;
-    let Y2 = height - (point2[1] + 0.5) * block_size;
+    const X1 = (point1[0] + 0.5) * block_size;
+    const Y1 = height - (point1[1] + 0.5) * block_size;
+    const X2 = (point2[0] + 0.5) * block_size;
+    const Y2 = height - (point2[1] + 0.5) * block_size;
 
     ctx.beginPath();
     ctx.arc(X1, Y1, 1, 0, 2 * Math.PI, false);
@@ -561,7 +542,7 @@ prev_button.addEventListener("click", () => {
 
 reset_button.addEventListener("click", () => {
   dp = [];
-  flag = 0;
+  display_canvas = false;
   last_move_direction = "";
   times_next_called = 0;
   point1 = [];
