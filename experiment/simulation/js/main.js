@@ -364,6 +364,9 @@ submit_button.addEventListener("click", (event) => {
 
 
 next_button.addEventListener("click", () => {
+  var outputDiv = document.getElementById("message-div");
+  outputDiv.style.display = "block";
+
   if (display_canvas) {
     if (times_next_called === 0) {
       if (slope === Number.MAX_SAFE_INTEGER) {
@@ -458,6 +461,10 @@ next_button.addEventListener("click", () => {
         showMessage(
           `Highlighted south and south-east pixels`
         );
+      }
+      else
+      {
+        showMessage(`Simulation is over`);
       }
     }
 
