@@ -4,12 +4,12 @@ Bresenham's algorithm is widely acknowledged for its simplicity and efficiency, 
 
 ### Algorithm Description
 
-The algorithm is specifically tailored for scenarios where `x1 < x2`, `y1 < y2`, and the slope of the line lies between 0 and 1. However, its versatility extends seamlessly to other cases through symmetry and reflections. For instance, when `x1 < x2`, `y1 < y2`, and the slope exceeds one, the current pixel `P(xp, yp)` decides between choosing the pixel `Pn(xp, yp+1)` (move in the north direction) or `Pne(xp+1, yp+1)` (move in the northeast direction), guided by the decision parameter.
+The algorithm is specifically tailored for scenarios where x<sub>1</sub> < x<sub>2</sub> , y<sub>1</sub> < y<sub>2</sub>, and the slope of the line lies between 0 and 1. However, its versatility extends seamlessly to other cases through symmetry and reflections. For instance, when x<sub>1</sub> < x<sub>2</sub>, y<sub>1</sub> < y<sub>2</sub>, and the slope exceeds one, the current pixel P( x<sub>p</sub>, y<sub>p</sub> ) decides between choosing the pixel P<sub>n</sub>( x<sub>p</sub>, y<sub>p</sub>+1 ) (move in the north direction) or P<sub>ne</sub>( x<sub>p</sub>+1, y<sub>p</sub>+1 ) (move in the northeast direction), guided by the decision parameter.
 
 ### Pseudo Code
 
-**Input:** Two endpoints of the line, `(x0, y0)` & `(x1, y1)`
+**Input:** Two endpoints of the line, ( x<sub>0</sub>, y<sub>0</sub> ) & ( x<sub>1</sub>, y<sub>1</sub> )
 
-**Assumption:** The algorithm assumes that the slope of the line (`m`) adheres to the constraint `0 < m < 1`. However, the experiment accommodates lines with any given slope.
+**Assumption:** The algorithm and simulation assumes that the slope of the line (m) adheres to the constraint 0 < m < 1.
 
 <img src="images/code.png">

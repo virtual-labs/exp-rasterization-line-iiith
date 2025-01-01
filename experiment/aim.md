@@ -2,8 +2,8 @@ In digital display systems, visual elements are represented by discrete units kn
 
 Specifically, when dealing with lines, the transformation from the continuous mathematical representation (y = mx + c) to a discrete set of pixels is termed line rasterization. The goal of line rasterization is to determine the optimal arrangement of pixels that best represents the given continuous line. Notable algorithms employed for line rasterization include:
 
-a. Bresenham's line algorithm
-b. Digital Differential Analyzer (DDA) algorithm
-c. Xiaolin Wu's algorithm
+a. Bresenham's line algorithm<br>
+b. Digital Differential Analyzer (DDA) algorithm<br>
+c. Xiaolin Wu's algorithm<br>
 
 In this context, our focus will be on the Bresenham's Line Rasterization algorithm.
