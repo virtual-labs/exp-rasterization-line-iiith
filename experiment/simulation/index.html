@@ -97,40 +97,37 @@
   <br />
 
   <main class="columns is-centered is-variable is-1-mobile is-flex is-flex-wrap-wrap workspace left">
-    <aside id="left" class="column has-text-centered is-2-desktop is-5-tablet is-5-mobile apparatus">
+    <aside id="left" class="column has-text-centered is-2-desktop is-10-tablet is-10-mobile apparatus">
       <div class="v-datalist-container">
         <div class="v-datalist-title is-size-8-mobile">Input</div>
         <div class="v-datalist-row">
           <div class="is-size-7-mobile v-content left">
             Line Co-ordinates:
           </div>
-          <div>
-            <p class="is-size-7-mobile">Point 1:</p>
-            <div class="is-justify-content-centre">
-              <div class="error" id="error-x1"></div>
-              <label for="x1">x :</label>
-              <input class="input is-small" type="number" min="-45" max="43" id="x1" value="2" placeholder="X " />
-              <div class="error" id="error-y1"></div>
-
-              <label for="y1">y :</label>
-
-              <input class="input is-small" type="number" min="-23" max="21" id="y1" value="5" placeholder="Y " />
+          <div class="points-container">
+            <div class="point-input">
+              <p class="is-size-7-mobile">Point 1:</p>
+              <div class="is-justify-content-centre">
+                <div class="error" id="error-x1"></div>
+                <label for="x1">x :</label>
+                <input class="input is-small" type="number" min="-45" max="43" id="x1" value="2" placeholder="X " />
+                <div class="error" id="error-y1"></div>
+                <label for="y1">y :</label>
+                <input class="input is-small" type="number" min="-23" max="21" id="y1" value="5" placeholder="Y " />
+              </div>
+            </div>
+            <div class="point-input">
+              <p class="is-size-7-mobile">Point 2:</p>
+              <div class="is-justify-content-centre">
+                <div class="error" id="error-x2"></div>
+                <label for="x2">x :</label>
+                <input class="input is-small" type="number" min="-45" max="43" id="x2" value="20" placeholder="X " />
+                <div class="error" id="error-y2"></div>
+                <label for="y2">y :</label>
+                <input class="input is-small" type="number" min="-23" max="21" id="y2" value="15" placeholder="Y " />
+              </div>
             </div>
           </div>
-          <div>
-            <p class="is-size-7-mobile">Point 2:</p>
-            <div class="is-justify-content-centre">
-              <div class="error" id="error-x2"></div>
-              <label for="x2">x :</label>
-
-              <input class="input is-small" type="number" min="-45" max="43" id="x2" value="20" placeholder="X " />
-              <div class="error" id="error-y2"></div>
-              <label for="y2">y :</label>
-
-              <input class="input is-small" type="number" min="-23" max="21" id="y2" value="15" placeholder="Y " />
-            </div>
-          </div>
-
           <button class="v-button is-small is-primary is-responsive submit-btn" id="submit">
             Submit
           </button>
@@ -151,6 +148,19 @@
             </button>
           </div>
         </div>
+        <div class="v-datalist-row top-border">
+          <div class="v-datalist-title is-size-8-mobile">
+            Algorithm Information
+          </div>
+          <div id="algorithm-info" class="is-size-7-mobile" style="padding: 10px;">
+            <div id="decision-parameter" style="margin-bottom: 5px;">
+              <strong>Decision Parameter:</strong> <span id="dp-value">-</span>
+            </div>
+            <div id="pixel-direction">
+              <strong>Pixel Direction:</strong> <span id="direction-value">-</span>
+            </div>
+          </div>
+        </div>
         <div id="message-div" style="padding-top: 20px;display:none">
           <!-- Messages will be dynamically added here -->
         </div>
@@ -162,7 +172,7 @@
       <canvas class="v-canvas-container" id="canvas"></canvas>
     </div>
     
-    <div id="observations" class="column has-text-centered is-2-desktop is-5-tablet is-5-mobile right">
+    <div id="observations" class="column has-text-centered is-2-desktop is-10-tablet is-10-mobile right">
       <div class="v-datalist-container" style="max-height: 100%; overflow-y: auto;">
         <div id="observations-list-heading">Line Coordinates</div>
         <div id="observations-list">
