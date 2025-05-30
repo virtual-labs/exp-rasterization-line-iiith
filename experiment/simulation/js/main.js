@@ -132,6 +132,7 @@ function setParameters() {
     }
   }
   // dp.push(decision_parameter);
+  resetAlgorithmInfo();
   return;
 }
 
@@ -213,127 +214,141 @@ function drawGrid() {
   makeAxis();
 }
 
+function updateAlgorithmInfo(dp, direction) {
+  document.getElementById('dp-value').textContent = dp;
+  document.getElementById('direction-value').textContent = direction;
+}
 
+function resetAlgorithmInfo() {
+  updateAlgorithmInfo('-', '-');
+}
 
-
- function handleNext() {
+function handleNext() {
    dp.push(decision_parameter);
 
    // Initialize message content
    let message = "";
+   let direction = "";
 
    // Check for the cases
    if (slope === Number.MAX_SAFE_INTEGER) {
      highlight(currx + 1, curry + 1, "red");
      curry += 1;
      highlight(currx, curry, chosen_color);
+     direction = "South-East";
      message = `At this step, we move to the pixel (${currx-originx}, ${curry-originy}) in the south-east direction.`;
    } else if (slope === Number.MIN_SAFE_INTEGER) {
      highlight(currx + 1, curry - 1, "red");
      curry -= 1;
      highlight(currx, curry, chosen_color);
+     direction = "North-East";
      message = `Here, we move to the pixel (${currx-originx}, ${curry-originy}) in the north-east direction.`;
    } else if (slope >= 0 && slope <= 1) {
      if (decision_parameter < 0) {
        last_move_direction = "east";
        decision_parameter = decision_parameter + 2 * dy;
        // Moving east
-       highlight(currx + 1, curry + 1, "red");
+       highlight(currx + 1, curry, "red");
        currx += 1;
        highlight(currx, curry, chosen_color);
+       direction = "East";
        message = `Proceeding eastwards, we move to (${currx-originx}, ${curry-originy}).`;
      } else {
        last_move_direction = "north-east";
+       decision_parameter = decision_parameter + 2 * dy - 2 * dx;
        // Moving north east
-       highlight(currx + 1, curry, "red");
+       highlight(currx + 1, curry + 1, "red");
        currx += 1;
        curry += 1;
        highlight(currx, curry, chosen_color);
-       decision_parameter = decision_parameter + 2 * dy - 2 * dx;
-       message = `Moving north-east, we reach (${currx-originx}, ${curry-originy}).`;
+       direction = "North-East";
+       message = `Moving north-east to (${currx-originx}, ${curry-originy}).`;
      }
    } else if (slope > 1) {
-     // Move north or north east
      if (decision_parameter < 0) {
        last_move_direction = "north";
        decision_parameter = decision_parameter + 2 * dx;
        // Move north
-       highlight(currx + 1, curry + 1, "red");
-       curry += 1;
-       highlight(currx, curry, chosen_color);
-       message = `Advancing northwards, we move to (${currx-originx}, ${curry-originy}).`;
-     } else {
-       // Moving north east
-       last_move_direction = "north-east";
        highlight(currx, curry + 1, "red");
        curry += 1;
-       currx += 1;
        highlight(currx, curry, chosen_color);
+       direction = "North";
+       message = `Advancing northwards, we move to (${currx-originx}, ${curry-originy}).`;
+     } else {
+       last_move_direction = "north-east";
        decision_parameter = decision_parameter + 2 * dx - 2 * dy;
+       // Moving north east
+       highlight(currx + 1, curry + 1, "red");
+       currx += 1;
+       curry += 1;
+       highlight(currx, curry, chosen_color);
+       direction = "North-East";
        message = `Proceeding north-east, we move to (${currx-originx}, ${curry-originy}).`;
      }
    } else if (slope >= -1 && slope < 0) {
-     // Choice to move east or south east
-     // dx is positive and dy is negative
      if (decision_parameter < 0) {
-       // Move east
        last_move_direction = "east";
-       highlight(currx + 1, curry - 1, "red");
+       decision_parameter = decision_parameter + 2 * Math.abs(dy);
+       // Move east
+       highlight(currx + 1, curry, "red");
        currx += 1;
        highlight(currx, curry, chosen_color);
-       decision_parameter = decision_parameter + 2 * Math.abs(dy);
+       direction = "East";
        message = `Choosing to move east, we go to (${currx-originx}, ${curry-originy}).`;
      } else {
+       last_move_direction = "south-east";
        decision_parameter = decision_parameter + 2 * Math.abs(dy) - 2 * dx;
        // Move south east
-       last_move_direction = "south-east";
-       highlight(currx + 1, curry, "red");
-       curry -= 1;
+       highlight(currx + 1, curry - 1, "red");
        currx += 1;
+       curry -= 1;
        highlight(currx, curry, chosen_color);
+       direction = "South-East";
        message = `Opting for south-east, we move to (${currx-originx}, ${curry-originy}).`;
      }
-   } else if (slope === Number.MIN_SAFE_INTEGER) {
-     // Handle specific case if needed
-   } else {
+   } else if (slope < -1) {
      if (decision_parameter < 0) {
        last_move_direction = "south";
-       decision_parameter = decision_parameter + 2 * Math.abs(dx);
+       decision_parameter = decision_parameter + 2 * dx;
        // Move south
-       highlight(currx + 1, curry - 1, "red");
+       highlight(currx, curry - 1, "red");
        curry -= 1;
        highlight(currx, curry, chosen_color);
+       direction = "South";
        message = `Proceeding southwards, we move to (${currx-originx}, ${curry-originy}).`;
      } else {
        last_move_direction = "south-east";
-       decision_parameter =
-         decision_parameter + 2 * Math.abs(dx) - 2 * Math.abs(dy);
+       decision_parameter = decision_parameter + 2 * dx - 2 * Math.abs(dy);
        // Move south east
-       highlight(currx, curry - 1, "red");
+       highlight(currx + 1, curry - 1, "red");
        currx += 1;
        curry -= 1;
        highlight(currx, curry, chosen_color);
+       direction = "South-East";
        message = `Moving south-east, we reach (${currx-originx}, ${curry-originy}).`;
      }
    }
 
-  const observationsDiv = document.getElementById("observations-list");
-  const observationItem = document.createElement("div");
-  observationItem.textContent = `(${currx - originx}, ${curry - originy})`; // Correctly formatted string
+   const observationsDiv = document.getElementById("observations-list");
+   const observationItem = document.createElement("div");
+   observationItem.textContent = `(${currx - originx}, ${curry - originy})`;
    observationItem.style.color = "green";
    observationsDiv.appendChild(observationItem);
    showMessage(message);
+   times_next_called++;
+   // Update the algorithm information display
+   updateAlgorithmInfo(decision_parameter.toFixed(2), direction);
+   return;
+}
 
- }
-
- function showMessage(message) {
-   const messageDiv = document.getElementById("message-div");
-   messageDiv.innerHTML = "";
-   const messageItem = document.createElement("div");
-   messageItem.classList.add("message-item");
-   messageItem.textContent = message;
-   messageDiv.appendChild(messageItem);
- }
+function showMessage(message) {
+  const messageDiv = document.getElementById("message-div");
+  messageDiv.innerHTML = "";
+  const messageItem = document.createElement("div");
+  messageItem.classList.add("message-item");
+  messageItem.textContent = message;
+  messageDiv.appendChild(messageItem);
+}
 
 submit_button.addEventListener("click", (event) => {
   let x1_val = document.getElementById("x1").value;
@@ -667,12 +682,15 @@ reset_button.addEventListener("click", () => {
   decision_parameter = 0;
   ctx.beginPath();
   ctx.clearRect(0, 0, width, height);
+  resetAlgorithmInfo();
 });
 
 function resetWindow() {
   // Reload the current window
   window.location.reload();
+  resetAlgorithmInfo();
 }
+
 submit_button.click();
 
 
@@ -711,17 +729,4 @@ document.addEventListener("click", hideInstructions);
 // Prevent closing the overlay when clicking inside it
 procedureMessage.addEventListener("click", (event) => {
   event.stopPropagation(); // Prevent the click inside from closing the overlay
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-  // Select the reset button
-  const resetBtn = document.getElementById("reset-all-btn");
-
-  // Function to reload the page, resetting everything to default
-  function resetAllFields() {
-    location.reload(); // Reload the page to reset all elements to default
-  }
-
-  // Add event listener to the reset button
-  resetBtn.addEventListener("click", resetAllFields);
 });

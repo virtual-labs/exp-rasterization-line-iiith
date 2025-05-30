@@ -1,28 +1,78 @@
-1. **Introduction to Experiment:**
-   - The canvas displays a 2-D pixel grid, representing how computers render graphics in the form of pixels.
-   - To begin the simulation, enter the coordinates of the line's endpoints. Note the limited range for coordinate values to ensure a visually effective experience.
+This simulation demonstrates how computers render lines on a pixel grid using Bresenham's Line Rasterization Algorithm. You'll see the step-by-step process of how the algorithm decides which pixels to illuminate to create a line.
 
-2. **Entering Endpoint Coordinates:**
-   - Ensure that:
-      1. The x-coordinate of the first point is less than or equal to the x-coordinate of the second point.
-      2. Coordinate values fall within the specified ranges for both x-coordinates and y-coordinates.
+### Step-by-Step Procedure
 
-3. **Initiating Simulation:**
-   - Click "Submit" to generate the line in yellow, with endpoints highlighted in red, overlaid on the canvas featuring pixel grids.
+1. **Setting Up the Line:**
 
-4. **Proceeding to Next Step:**
-   - Click "Next" to advance the simulation.
+   - Enter the coordinates for two points that define your line:
+     - Point 1 (Start Point): Enter x and y coordinates
+     - Point 2 (End Point): Enter x and y coordinates
+   - Coordinate ranges:
+     - x-coordinates: -45 to 43
+     - y-coordinates: -23 to 21
+   - Click "Submit" to initialize the simulation
 
-5. **Highlighting Candidate Pixels:**
-   - The simulation highlights candidate pixels in blue, representing possible choices for displaying the line on the computer screen.
+2. **Understanding the Display:**
 
-6. **Choosing the Pixel:**
-   - Click "Next" to select the pixel from the candidate pixels.
+   - The canvas shows a pixel grid with:
+     - A yellow line connecting your points
+     - Red dots marking the start and end points
+     - Grid lines for reference
+   - The left panel shows:
+     - Your input coordinates
+     - Algorithm information (decision parameter and pixel direction)
+     - Step-by-step messages
+   - The right panel displays the sequence of chosen pixel coordinates
 
-7. **Navigating Backward:**
-   - Use the "Previous" button to move backward in the experiment simulation.
+3. **Running the Simulation:**
 
-8. **Resetting the Canvas:**
-   - Click "Reset" to clear the canvas and start the experiment afresh.
+   - Click "Next" to proceed through the algorithm steps
+   - At each step, you'll observe:
+     1. **Candidate Pixels:**
+        - Blue highlights show possible next pixels
+        - These represent the algorithm's choices
+     2. **Selected Pixel:**
+        - Green highlight shows the chosen pixel
+        - Red highlight shows the rejected option
+     3. **Algorithm Information:**
+        - Current decision parameter value
+        - Direction of the chosen pixel (East, North-East, etc.)
+     4. **Step Message:**
+        - Explains the current decision
+        - Shows the coordinates of the chosen pixel
 
-This procedure guides users through the steps of the experiment, providing a hands-on experience in understanding Bresenham's Line Rasterization Algorithm.
+4. **Understanding the Algorithm:**
+
+   - Watch how the decision parameter influences pixel selection
+   - Observe how the algorithm chooses between:
+     - Moving horizontally (East)
+     - Moving diagonally (North-East, South-East)
+     - Moving vertically (North, South)
+   - The decision parameter helps determine which pixel is closer to the ideal line
+
+5. **Navigation Controls:**
+
+   - "Next": Move forward through the algorithm steps
+   - "Prev": Go back to the previous step
+   - "Reset": Start over with new coordinates
+
+6. **Observing Results:**
+   - The right panel shows the complete path of chosen pixels
+   - Each step's message explains the reasoning
+   - The algorithm information helps understand the decision-making process
+   - The final result should show a continuous line of pixels approximating your input line
+
+### Tips for Better Understanding
+
+- Start with simple lines (horizontal or vertical) to understand basic movement
+- Try diagonal lines to see how the algorithm handles different slopes
+- Pay attention to the decision parameter values and how they change
+- Notice how the algorithm maintains visual continuity of the line
+- Use the "Prev" button to review important steps
+
+### Expected Outcomes
+
+- A continuous line of pixels connecting your start and end points
+- Smooth visual appearance despite the discrete nature of pixels
+- Efficient pixel selection that minimizes deviation from the ideal line
+- Clear understanding of how the algorithm makes decisions at each step
