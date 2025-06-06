@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/css/style.min.css" />
+  <link rel="stylesheet" href="./css/main.css" />
+</head>
+
+<body class="page has-text-centered">
+  <div class="columns is-centered column">
+    <!-- <div class="v-collapsible-instruction-container v-instruction-container">
+      <div id="instruction-title" class="v-collapsible is-size-5">Instructions</div>
+      <div id="procedure-message" class="v-content" style="text-align: left; padding-left: 10%; padding-right: 10%;">
+        <ul style="list-style: disc;">
+          <li>Enter the point co-ordinates</li>
+          <li>Submit to see the grid form</li>
+          <li> At each iteration of the next , the possible pixels for the next iteration are highlighted in blue.
+          </li>
+          <li>At next iteration , one of the possible candidate pixels ,is chosen and highlighted in green , the other
+            pixel which is not selected , is highlighted in red. </li>
+        </ul>
+      </div>
+    </div> -->
+
+    <div class="v-collapsible-instruction-container">
+      <div class="v-collapsible" id="toggle-instructions"
+        style="cursor: pointer; background: #f1f1f1; padding: 10px; border-radius: 5px;">
+        <strong>Instructions</strong>
+      </div>
+    </div>
+    
+    <!-- Fullscreen Instructions Modal -->
+    <div id="procedure-message" class="v-content">
+      <ol>
+        <li class="instr-font">
+          <strong style="font-size: 19px;">📏 Start and End Coordinates:</strong>
+          <ul style="list-style-type: disc; padding-left: 20px;">
+            <li><strong>Start Point (Point-1)</strong>: Coordinates of the line's starting point.
+            </li>
+            <li><strong>End Point (Point-2)</strong>: Coordinates of the line's ending point.</li>
+          </ul>
+        </li>
+
+        <li class="instr-font">
+          <strong style="font-size: 19px;">🖌️ Iterative Pixel Selection:</strong>
+          <ul style="list-style-type: disc; padding-left: 20px;">
+            <li>At each iteration of <em style="color: #3298dc;">Next</em>, the possible pixels for the next step are highlighted in blue.</li>
+            <li>During the next iteration, one of the possible candidate pixels is selected and highlighted in green, while the
+              other pixel, which is not chosen, is highlighted in red.</li>
+          </ul>
+        </li>
+
+        
+        <li class="instr-font">
+          <strong style="font-size: 19px;">🚀 Iteration Controls</strong>:
+          <p>To begin, set the line coordinates and then press <strong
+              style="color: #04aa6d;;">Submit</strong>.
+            Use the controls below to navigate through the simulation:</p>
+        </li>
+        <ul style="list-style-type: disc; padding-left: 20px;">
+          <li class="instr-font">
+            <strong style="font-size: 19px;">🔼 <span style="color: #3298dc;">Next</span>:</strong> Move forward to
+            the next step
+            or iteration.
+          </li>
+          <li class="instr-font">
+            <strong style="font-size: 19px;">🔽 <span style="color: #48c774;">Prev</span>:</strong> Move back to the
+            previous step
+            or iteration.
+          </li>
+          <li class="instr-font">
+            <strong style="font-size: 19px;">🔄 <span style="color: #f14668;">Reset</span>:</strong> Reset the
+            simulation to its
+            initial state.
+          </li>
+        
+        </ul>
+        <li class="instr-font">
+          <strong style="font-size: 19px;">🔍 Line-coordinates</strong>:
+          <ul style="list-style-type: disc; padding-left: 20px;">
+            <li>Continuously track the coordinates of the line as you progress through the simulation.</li>
+          </ul>
+        </li>
+
+        <div style="background-color: #f0f0f0; padding: 5px; margin: 10px 0;">
+          <p style="font-style: italic; text-align: center; margin: 0;">
+            Note: This experiment simulation is optimized for desktop screens. While basic functionality is
+            available on
+            mobile devices, for the best experience, use a desktop or PC monitor.
+          </p>
+        </div>
+      </ol>
+    </div>
+  </div>
+  <br />
+
+  <main class="columns is-centered is-variable is-1-mobile is-flex is-flex-wrap-wrap workspace left">
+    <aside id="left" class="column has-text-centered is-2-desktop is-10-tablet is-10-mobile apparatus">
+      <div class="v-datalist-container">
+        <div class="v-datalist-title is-size-8-mobile">Input</div>
+        <div class="v-datalist-row">
+          <div class="is-size-7-mobile v-content left">
+            Line Co-ordinates:
+          </div>
+          <div class="points-container">
+            <div class="point-input">
+              <p class="is-size-7-mobile">Point 1:</p>
+              <div class="is-justify-content-centre">
+                <div class="error" id="error-x1"></div>
+                <label for="x1">x :</label>
+                <input class="input is-small" type="number" min="-45" max="43" id="x1" value="2" placeholder="X " />
+                <div class="error" id="error-y1"></div>
+                <label for="y1">y :</label>
+                <input class="input is-small" type="number" min="-23" max="21" id="y1" value="5" placeholder="Y " />
+              </div>
+            </div>
+            <div class="point-input">
+              <p class="is-size-7-mobile">Point 2:</p>
+              <div class="is-justify-content-centre">
+                <div class="error" id="error-x2"></div>
+                <label for="x2">x :</label>
+                <input class="input is-small" type="number" min="-45" max="43" id="x2" value="20" placeholder="X " />
+                <div class="error" id="error-y2"></div>
+                <label for="y2">y :</label>
+                <input class="input is-small" type="number" min="-23" max="21" id="y2" value="15" placeholder="Y " />
+              </div>
+            </div>
+          </div>
+          <button class="v-button is-small is-primary is-responsive submit-btn" id="submit">
+            Submit
+          </button>
+        </div>
+        <div class="v-datalist-row top-border">
+          <div class="v-datalist-title is-size-8-mobile">
+            Iteration Controls
+          </div>
+          <div class="columns is-centered is-flex is-flex-wrap-wrap button-div">
+            <button class="v-button next-btn is-responsive btn" id="next-button">
+              Next
+            </button>
+            <button class="v-button previous-btn is-responsive btn" id="prev-button">
+              Prev
+            </button>
+            <button class="v-button reset-btn is-responsive btn" id="reset-button" onclick="resetWindow()">
+              Reset
+            </button>
+          </div>
+        </div>
+        <div class="v-datalist-row top-border">
+          <div class="v-datalist-title is-size-8-mobile">
+            Algorithm Information
+          </div>
+          <div id="algorithm-info" class="is-size-7-mobile" style="padding: 10px;">
+            <div id="decision-parameter" style="margin-bottom: 5px;">
+              <strong>Decision Parameter:</strong> <span id="dp-value">-</span>
+            </div>
+            <div id="pixel-direction">
+              <strong>Pixel Direction:</strong> <span id="direction-value">-</span>
+            </div>
+          </div>
+        </div>
+        <div id="message-div" style="padding-top: 20px;display:none">
+          <!-- Messages will be dynamically added here -->
+        </div>
+      </div>
+    </aside>
+
+
+    <div class="column is-7-desktop is-10-tablet is-10-mobile exp">
+      <canvas class="v-canvas-container" id="canvas"></canvas>
+    </div>
+    
+    <div id="observations" class="column has-text-centered is-2-desktop is-10-tablet is-10-mobile right">
+      <div class="v-datalist-container" style="max-height: 100%; overflow-y: auto;">
+        <div id="observations-list-heading">Line Coordinates</div>
+        <div id="observations-list">
+          <!-- Observation items will be dynamically added here -->
+        </div>
+      </div>
+
+
+    </div>
+    <script src="js/main.js "></script>
+    <script src="https://cdn.jsdelivr.net/gh/virtual-labs/virtual-style@0.0.8-b/js/script.js "></script>
+<script src="../assets/js/iframeResize.js"></script>
+        
+        </body>
+
+</html>

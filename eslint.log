@@ -1,0 +1,13 @@
+
+/home/runner/work/exp-rasterization-line-iiith/exp-rasterization-line-iiith/experiment/simulation/js/main.js
+   31:7   warning  'grid_color' is assigned a value but never used           no-unused-vars
+   48:5   warning  'last_move_direction' is assigned a value but never used  no-unused-vars
+  115:3   warning  'display_canvas' is not defined                           no-undef
+  377:4   warning  Unnecessary semicolon                                     no-extra-semi
+  385:7   warning  'display_canvas' is not defined                           no-undef
+  674:3   warning  'display_canvas' is not defined                           no-undef
+  688:10  warning  'resetWindow' is defined but never used                   no-unused-vars
+
+✖ 7 problems (0 errors, 7 warnings)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+

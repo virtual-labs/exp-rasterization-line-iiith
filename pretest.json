@@ -1,0 +1,91 @@
+{
+    "version": 2.0,
+    "questions": [
+      {
+        "question": "1. What is the primary purpose of Line Rasterization in computer graphics?",
+        "answers": {
+          "a": "To convert pixels into a geometric line.",
+          "b": "To transform continuous geometric lines into discrete pixels for digital display.",
+          "c": "To create 3D effects in computer-generated images.",
+          "d": "To remove pixels from the frame buffer."
+        },
+        "correctAnswer": "b",
+        "explanations": {
+          "a": "Incorrect. Line Rasterization involves the conversion of geometric lines into pixels.",
+          "b": "Correct. Line Rasterization transforms continuous geometric lines into discrete pixels for digital display.",
+          "c": "Incorrect. Line Rasterization is primarily focused on 2D representation.",
+          "d": "Incorrect. Line Rasterization adds pixels to the frame buffer for display."
+        },
+        "difficulty": "beginner"
+      },
+      {
+        "question": "2. Which algorithm is specifically mentioned for Line Rasterization?",
+        "answers": {
+          "a": "QuickSort algorithm",
+          "b": "Bubble Sort algorithm",
+          "c": "Bresenham's Line algorithm",
+          "d": "Binary Search algorithm"
+        },
+        "correctAnswer": "c",
+        "explanations": {
+          "a": "Incorrect. QuickSort is a sorting algorithm, not related to Line Rasterization.",
+          "b": "Incorrect. Bubble Sort is a sorting algorithm, not related to Line Rasterization.",
+          "c": "Correct. Bresenham's Line algorithm is discussed for Line Rasterization.",
+          "d": "Incorrect. Binary Search is not a Line Rasterization algorithm."
+        },
+        "difficulty": "beginner"
+      },
+      {
+        "question": "3. Which of the following is not a common algorithm for Line Rasterization?",
+        "answers": {
+          "a": "Bresenham's Line algorithm",
+          "b": "Digital Differential Analyzer (DDA) algorithm",
+          "c": "Xiaolin Wu's algorithm",
+          "d": "QuickSort algorithm"
+        },
+        "correctAnswer": "d",
+        "explanations": {
+          "a": "Incorrect. Bresenham's Line algorithm is a common algorithm for Line Rasterization.",
+          "b": "Incorrect. DDA is a common algorithm for Line Rasterization.",
+          "c": "Incorrect. Xiaolin Wu's algorithm is a common algorithm for Line Rasterization.",
+          "d": "Correct. QuickSort is a sorting algorithm, not used for Line Rasterization."
+        },
+        "difficulty": "intermediate"
+      },
+      {
+        "question": "4. In the context of Line Rasterization, what does DDA stand for?",
+        "answers": {
+          "a": "Digital Drawing Algorithm",
+          "b": "Discrete Data Analysis",
+          "c": "Digital Differential Analyzer",
+          "d": "Disjointed Display Array"
+        },
+        "correctAnswer": "c",
+        "explanations": {
+          "a": "Incorrect. DDA does not stand for Digital Drawing Algorithm.",
+          "b": "Incorrect. DDA does not stand for Discrete Data Analysis.",
+          "c": "Correct. DDA stands for Digital Differential Analyzer in the context of Line Rasterization.",
+          "d": "Incorrect. DDA does not stand for Disjointed Display Array."
+        },
+        "difficulty": "intermediate"
+      },
+      {
+        "question": "5. In the context of Line Rasterization, what does anti-aliasing refer to?",
+        "answers": {
+          "a": "Preventing line aliasing",
+          "b": "Creating smooth transitions in color intensity",
+          "c": "Sorting pixels in descending order",
+          "d": "Enhancing pixel visibility"
+        },
+        "correctAnswer": "b",
+        "explanations": {
+          "a": "Incorrect. Anti-aliasing is not about preventing line aliasing.",
+          "b": "Correct. Anti-aliasing in Line Rasterization involves creating smooth transitions in color intensity.",
+          "c": "Incorrect. Sorting pixels in descending order is unrelated to anti-aliasing.",
+          "d": "Incorrect. Enhancing pixel visibility is not the purpose of anti-aliasing."
+        },
+        "difficulty": "advanced"
+      }
+    ]
+  }
+  
