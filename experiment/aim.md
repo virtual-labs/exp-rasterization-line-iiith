@@ -1,9 +1,7 @@
-In digital display systems, visual elements are represented by discrete units known as pixels. This departure from the continuous nature of our visual perception necessitates a transformation of geometric figures from continuous space to a grid of pixels for display on digital screens. This transformation process, referred to as rasterization or scan conversion, is essential for rendering images on digital displays.
+This experiment demonstrates the implementation of Bresenham's Line Rasterization algorithm to convert continuous mathematical lines into discrete pixels. The specific objectives are:
 
-Specifically, when dealing with lines, the transformation from the continuous mathematical representation (y = mx + c) to a discrete set of pixels is termed line rasterization. The goal of line rasterization is to determine the optimal arrangement of pixels that best represents the given continuous line. Notable algorithms employed for line rasterization include:
+1. To implement Bresenham's algorithm for lines with slope between 0 and 1
+2. To visualize the step-by-step pixel selection process
+3. To analyze how the algorithm determines the optimal pixel arrangement without using floating-point calculations
 
-a. Bresenham's line algorithm<br>
-b. Digital Differential Analyzer (DDA) algorithm<br>
-c. Xiaolin Wu's algorithm<br>
-
-In this context, our focus will be on the Bresenham's Line Rasterization algorithm.
+The experiment focuses on Bresenham's algorithm as it provides an efficient integer-only solution for line rasterization, making it ideal for understanding the fundamental principles of converting continuous lines to discrete pixels.

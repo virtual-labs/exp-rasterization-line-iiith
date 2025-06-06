@@ -106,38 +106,63 @@ input[type="number"] {
 }
 
 @media screen and (max-width: 800px) {
+  .page {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .workspace {
+    margin: 0;
+    padding: 10px;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
   .left {
     order: 1;
     width: 100% !important;
     margin-bottom: 20px;
-    padding: 0 15px;
+    padding: 0 10px;
+    box-sizing: border-box;
   }
   
   .exp {
     order: 2;
     width: 100% !important;
     margin-bottom: 20px;
+    padding: 0;
   }
   
   .right {
     order: 3;
     width: 100% !important;
-    padding: 0 15px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
   }
 
   .v-datalist-container {
     width: 100%;
     margin: 0 auto;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
   }
 
   .v-canvas-container {
     width: 100%;
     height: 400px;
+    margin: 0 auto;
   }
 
   .points-container {
     flex-direction: column;
     gap: 15px;
+    width: 100%;
   }
 
   .point-input {
@@ -150,15 +175,42 @@ input[type="number"] {
 
   #message-div {
     max-height: 150px;
-  }
-
-  .v-datalist-container {
-    margin-bottom: 15px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   #algorithm-info, #message-div {
     width: 100%;
     box-sizing: border-box;
+  }
+
+  #observations-list {
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+
+  #observations-list-heading {
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .v-datalist-row {
+    margin-bottom: 8px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .button-div {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .btn {
+    flex: 1;
+    max-width: 100px;
   }
 }
 
